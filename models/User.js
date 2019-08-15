@@ -19,14 +19,17 @@ const userSchema = new mongoose.Schema({
   numComments: { type: Number, default: -1 }, //not including posts
   numActorReplies: { type: Number, default: -1 }, //not including posts
 
-  numPostLikes: { type: Number, default: 0 }, 
-  numCommentLikes: { type: Number, default: 0 }, 
+  numPostLikes: { type: Number, default: 0 },
+  numCommentLikes: { type: Number, default: 0 },
 
   lastNotifyVisit: Date,
 
   mturkID: String,
 
-  group: String, //full group type
+  group: String, //full group type for post displays
+  moderation_group: String, //Full group type for the content moderation study
+  flag_group: String, //Flag type (ai, user, none)
+  bully_group: String, //Type of bullying group (ambig, unambig)
   ui: String,    //just UI type (no or ui)
   notify: String, //notification type (no, low or high)
   script_type: String, //type of script they are running in
@@ -64,7 +67,7 @@ const userSchema = new mongoose.Schema({
       absTime: Number,//millisecons
       new_comment: {type: Boolean, default: false}, //is new comment
       isUser: {type: Boolean, default: false}, //is this a comment on own post
-      liked: {type: Boolean, default: false}, //has the user liked it? 
+      liked: {type: Boolean, default: false}, //has the user liked it?
       flagged: {type: Boolean, default: false},//is Flagged?
       likes: Number
       }, { versionKey: false })],
@@ -134,7 +137,7 @@ const userSchema = new mongoose.Schema({
         flagTime  : [Number],
         likeTime  : [Number],
         replyTime  : [Number],
-        
+
         comments: [new Schema({
           comment: {type: Schema.ObjectId},//ID Reference for Script post comment
           liked: {type: Boolean, default: false}, //is liked?
@@ -190,7 +193,7 @@ userSchema.methods.comparePassword = function comparePassword(candidatePassword,
  * Add Log to User if access is 1 hour from last use.
  */
 userSchema.methods.logUser = function logUser(time, agent, ip) {
-  
+
   if(this.log.length > 0)
   {
     var log_time = new Date(this.log[this.log.length -1].time);
@@ -243,8 +246,8 @@ userSchema.methods.logPostStats = function logPage(postID) {
     log.GeneralFlagNumber = 0;
 
 
-    for (var k = this.feedAction.length - 1; k >= 0; k--) 
-    {    
+    for (var k = this.feedAction.length - 1; k >= 0; k--)
+    {
       if(this.feedAction[k].post != null)
       {
         if(this.feedAction[k].liked)
@@ -305,7 +308,7 @@ userSchema.methods.getPostsAndReplies = function getPostsAndReplies() {
 
 //Return the user post from its ID
 userSchema.methods.getUserPostByID = function(postID) {
-  
+
   return this.posts.find(x => x.postID == postID);
 
 };
@@ -313,19 +316,19 @@ userSchema.methods.getUserPostByID = function(postID) {
 
 //Return the user reply from its ID
 userSchema.methods.getUserReplyByID = function(replyID) {
-  
+
   return this.posts.find(x => x.replyID == replyID);
 
 };
 
 //Return the user reply from its ID
 userSchema.methods.getActorReplyByID = function(actorReplyID) {
-  
+
   return this.posts.find(x => x.actorReplyID == actorReplyID);
 
 };
 
-//get user posts within the min/max time period 
+//get user posts within the min/max time period
 userSchema.methods.getPostInPeriod = function(min, max) {
     //concat posts & reply
     return this.posts.filter(function(item) {
