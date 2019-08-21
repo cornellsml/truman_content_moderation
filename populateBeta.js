@@ -27,10 +27,6 @@ async function readData() {
     try {
         //synchronously read all csv files and convert them to JSON
         await console.log("Start reading data from .csv files")
-         actors_list = await CSVToJSON().fromFile('./input/actors.csv');
-         posts_list = await CSVToJSON().fromFile('./input/posts.csv');
-         comment_list = await CSVToJSON().fromFile('./input/replies.csv');
-         notification_list = await CSVToJSON().fromFile('./input/notifications.csv');
          notification_reply_list = await CSVToJSON().fromFile('./input/actor_replies.csv');
 
         //synchronously write all converted JSON output to .json files incase for future use
@@ -64,71 +60,183 @@ mongoose.connection.on('error', (err) => {
 This is a huge function of chained promises, done to achieve serial completion of asynchronous actions.
 There's probably a better way to do this, but this worked.
 */
-async function dropCollections() {
-  //dropping the collections in serial, not really necessary. Did this mostly for sake of experimentation.
-  let promise = new Promise((resolve, reject) => {
+async function doPopulate() {
+  /****
+  Dropping collections
+  ****/
+  let promise = new Promise((resolve, reject) => { //Drop the actors collection
     console.log("Dropping actors...");
     db.collections['actors'].drop(function (err) {
         console.log('actors collection dropped');
         resolve("done");
       });
-    }).then(function(result){
-      return new Promise((resolve, reject) => { // (*)
+    }).then(function(result){ //Drop the scripts collection
+      return new Promise((resolve, reject) => {
         console.log("Dropping scripts...");
         db.collections['scripts'].drop(function (err) {
             console.log('scripts collection dropped');
             resolve("done");
           });
       });
-    }).then(function(result){
-      return new Promise((resolve, reject) => { // (*)
+    }).then(function(result){ //Drop the notifications collection
+      return new Promise((resolve, reject) => {
         console.log("Dropping notifications...");
         db.collections['notifications'].drop(function (err) {
             console.log('notifications collection dropped');
             resolve("done");
           });
       });
-
+    /***
+    Converting CSV files to JSON
+    ***/
+    }).then(function(result){ //Convert the actors csv file to json, store in actors_list
+      return new Promise((resolve, reject) => {
+        console.log("Reading actors list...");
+        CSVToJSON().fromFile('./input/actors.csv').then(function(json_array){
+          actors_list = json_array;
+          console.log("Finished getting the actors_list");
+          resolve("done");
+        });
+      });
+    }).then(function(result){ //Convert the posts csv file to json, store in posts_list
+      return new Promise((resolve, reject) => {
+        console.log("Reading posts list...");
+        CSVToJSON().fromFile('./input/posts.csv').then(function(json_array){
+          posts_list = json_array;
+          console.log("Finished getting the posts list");
+          resolve("done");
+        });
+      });
+    }).then(function(result){ //Convert the comments csv file to json, store in comment_list
+      return new Promise((resolve, reject) => {
+        console.log("Reading comment list...");
+        CSVToJSON().fromFile('./input/replies.csv').then(function(json_array){
+          comment_list = json_array;
+          console.log("Finished getting the comment list");
+          resolve("done");
+        });
+      });
+    }).then(function(result){ //Convert the comments csv file to json, store in comment_list\
+      return new Promise((resolve, reject) => {
+        console.log("Reading notification list...");
+        CSVToJSON().fromFile('./input/notifications.csv').then(function(json_array){
+          notification_list = json_array;
+          console.log("Finished getting the notification list");
+          resolve("done");
+        });
+      });
+    }).then(function(result){ //Convert the notification reply csv file to json, store in comment_list\
+      return new Promise((resolve, reject) => {
+        console.log("Reading notification reply list...");
+        CSVToJSON().fromFile('./input/actor_replies.csv').then(function(json_array){
+          notification_reply_list = json_array;
+          console.log("Finished getting the notification reply list");
+          resolve("done");
+        });
+      });
     /*************************
-    createActorInstances:
-    Creates all the Actors in the simulation
-    Must be done first!
+    Create all the Actors in the simulation
+    Must be done before creating any other instances
     *************************/
   }).then(function(result){
-      console.log(actors_list);
-        async.each(actors_list, function (actor_raw, callback) {
-            actordetail = {};
-            actordetail.profile = {};
+        console.log("starting to populate actors...");
+        return new Promise((resolve, reject) => {
+          async.each(actors_list, function (actor_raw, callback) {
+              actordetail = {};
+              actordetail.profile = {};
 
-            actordetail.profile.name = actor_raw.name
-            actordetail.profile.location = actor_raw.location;
-            actordetail.profile.picture = actor_raw.picture;
-            actordetail.profile.bio = actor_raw.bio;
-            actordetail.profile.age = actor_raw.age;
-            actordetail.class = actor_raw.class;
-            actordetail.username = actor_raw.username;
+              actordetail.profile.name = actor_raw.name
+              actordetail.profile.location = actor_raw.location;
+              actordetail.profile.picture = actor_raw.picture;
+              actordetail.profile.bio = actor_raw.bio;
+              actordetail.profile.age = actor_raw.age;
+              actordetail.class = actor_raw.class;
+              actordetail.username = actor_raw.username;
 
-            var actor = new Actor(actordetail);
+              var actor = new Actor(actordetail);
 
-            actor.save(function (err) {
-                if (err) {
-                    console.log("Something went wrong with save!!!");
-                    return -1;
-                }
-                console.log('New Actor: ' + actor.username);
-            });
-        },
-            function (err) {
-                //return response
-                if(err){
-                  console.log("There was a problem...");
-                }else{
-                  console.log("All DONE WITH ACTORS!!!");
-                  return 'Loaded actors';
-                }
-            }
+              actor.save(function (err) {
+                  if (err) {
+                      console.log("Something went wrong!!!");
+                      return -1;
+                  }
+                  console.log('New Actor: ' + actor.username);
+                  callback();
+              });
+          },
+          function (err) {
+              //return response
+              console.log("All DONE WITH ACTORS!!!")
+              resolve("done");
+              return 'Loaded Actors'
+          }
         );
       });
+    /*************************
+    Create each post and upload it to the DB
+    Actors must be in DB first to add them correctly to the post
+    *************************/
+    }).then(function(result){
+          console.log("starting to populate posts...");
+          return new Promise((resolve, reject) => {
+            async.each(posts_list, function (new_post, callback) {
+                Actor.findOne({ username: new_post.actor }, (err, act) => {
+                    if (err) { console.log("createPostInstances error"); console.log(err); return; }
+                    if (act) {
+                        var postdetail = new Object();
+
+                        postdetail.likes =  getLikes();
+                        postdetail.experiment_group = new_post.experiment_group
+                        postdetail.post_id = new_post.id;
+                        postdetail.body = new_post.body;
+                        postdetail.class = new_post.class;
+                        postdetail.picture = new_post.picture;
+                        postdetail.lowread = getReads(6, 20);
+                        postdetail.highread = getReads(145, 203);
+                        postdetail.actor = act;
+                        postdetail.time = timeStringToNum(new_post.time);
+
+                        var script = new Script(postdetail);
+                        script.save(function (err) {
+                            if (err) {
+                                console.log("Something went wrong in Saving POST!!!");
+                                callback(err);
+                            }
+                            //console.log('Saved New Post: ' + script.id);
+                            callback();
+                        });
+                    }
+                    else {
+                        //Else no ACTOR Found
+                        console.log("No Actor Found!!!");
+                        callback();
+                    }
+                });
+              },
+              function (err) {
+                  if (err) {
+                      console.log("END IS WRONG!!!");
+                      callback(err);
+                  }
+                  //return response
+                  console.log("All DONE WITH POSTS!!!")
+                  return 'Loaded Posts'
+                  resolve();
+              }
+            );
+        });
+    /*************************
+    actorNotifyInstances:
+    Creates each post and uploads it to the DB
+    Actors must be in DB first to add them correctly to the post
+    *************************/
+    }).then(function(result){
+      return new Promise((resolve, reject) => {
+
+
+
+      });
+  });
 }
 
 //capitalize a string
@@ -541,6 +649,4 @@ async function loadDatabase() {
 // createPostInstances()
 // createPostRepliesInstances()
 
-//loadDatabase()
-//readData();
-dropCollections()
+doPopulate();
