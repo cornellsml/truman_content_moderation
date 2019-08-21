@@ -23,22 +23,6 @@ var posts_list
 var comment_list
 var notification_list
 var notification_reply_list
-async function readData() {
-    try {
-        //synchronously read all csv files and convert them to JSON
-        await console.log("Start reading data from .csv files")
-         notification_reply_list = await CSVToJSON().fromFile('./input/actor_replies.csv');
-
-        //synchronously write all converted JSON output to .json files incase for future use
-        // fs.writeFileSync("./input/bots.json", JSON.stringify(actors_list));
-        // fs.writeFileSync("./input/allposts.json", JSON.stringify(posts_list));
-        // fs.writeFileSync("./input/allreplies.json", JSON.stringify(comment_list));
-        await console.log("Converted data to json")
-    } catch (err) {
-        console.log('Error occurred in reading data from csv files', err);
-    }
-}
-
 
 dotenv.config({ path: '.env' });
 
