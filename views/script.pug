@@ -136,6 +136,7 @@ block content
                               else
                                 a.like.comment Like
                               a.flag.comment Flag
+
           .extra.content
             .ui.fluid.left.labeled.right.icon.input
               .ui.label
@@ -224,30 +225,62 @@ block content
                             a.flag.comment Flag
                     //- Else this is a normal comment from the script
                     else
-                      .comment(commentID=comment.id)
-                        a.avatar(href='/user/'+comment.actor.username)
-                          //-img(src=cdn+'/profile_pictures/'+comment.actor.profile.picture)                       
-                          img.lazyload(data-src=cdn+"/profile_pictures/"+comment.actor.profile.picture)
-                        .content
-                          a.author(href='/user/'+comment.actor.username)=comment.actor.profile.name
-                          .metadata
-                            span.date=(user.createdAt.getTime() + comment.time)
-                            .rating
+                      if (comment.class === "bullying")
+                        .ui.info.message
+                          .comment(commentID=comment.id)
+                            a.avatar(href='/user/'+comment.actor.username)
+                              //-img(src=cdn+'/profile_pictures/'+comment.actor.profile.picture)                       
+                              img.lazyload(data-src=cdn+"/profile_pictures/"+comment.actor.profile.picture)
+                            .content
+                              a.author(href='/user/'+comment.actor.username)=comment.actor.profile.name
+                              .metadata
+                                span.date=(user.createdAt.getTime() + comment.time)
+                                .rating
+                                  if comment.liked
+                                    i.red.heart.icon
+                                    span=comment.likes
+                                    |  Likes 
+                                  else
+                                    i.heart.icon
+                                    span.num=comment.likes
+                                    |  Likes
+                              .text=comment.body
+                              .actions
+                                if comment.liked
+                                  a.red.like.comment Like
+                                else
+                                  a.like.comment Like
+                                a.flag.comment Flag
+                          .ui.header Our automated system has flagged this comment as harassment. Do you agree? 
+                          a.ui.button(href='#') Yes
+                          a.ui.button(href='#') No 
+
+                      else
+                        .comment(commentID=comment.id)
+                          a.avatar(href='/user/'+comment.actor.username)
+                            //-img(src=cdn+'/profile_pictures/'+comment.actor.profile.picture)                       
+                            img.lazyload(data-src=cdn+"/profile_pictures/"+comment.actor.profile.picture)
+                          .content
+                            a.author(href='/user/'+comment.actor.username)=comment.actor.profile.name
+                            .metadata
+                              span.date=(user.createdAt.getTime() + comment.time)
+                              .rating
+                                if comment.liked
+                                  i.red.heart.icon
+                                  span=comment.likes
+                                  |  Likes 
+                                else
+                                  i.heart.icon
+                                  span.num=comment.likes
+                                  |  Likes
+                            .text=comment.body
+                            .actions
                               if comment.liked
-                                i.red.heart.icon
-                                span=comment.likes
-                                |  Likes 
+                                a.red.like.comment Like
                               else
-                                i.heart.icon
-                                span.num=comment.likes
-                                |  Likes
-                          .text=comment.body
-                          .actions
-                            if comment.liked
-                              a.red.like.comment Like
-                            else
-                              a.like.comment Like
-                            a.flag.comment Flag
+                                a.like.comment Like
+                              a.flag.comment Flag
+
           .extra.content
             .ui.fluid.left.labeled.right.icon.input
               .ui.label
