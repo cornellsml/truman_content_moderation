@@ -633,6 +633,44 @@ exports.postUpdateFeedAction = (req, res, next) => {
 
       }
 
+      //RESPOND YES TO "DO YOU AGREE" WITH THE CONTENT MODERATION
+      else if(req.body.clickedYes)
+      {
+        let clickedYes = req.body.clickedYes - user.feedAction[feedIndex].startTime
+        console.log("!!!!!!New clickedYes Time: ", clickedYes);
+        if (user.feedAction[feedIndex].comments[commentIndex].moderationResponseTime)
+        {
+          user.feedAction[feedIndex].comments[commentIndex].moderationResponseTime.push(clickedYes);
+
+        }
+        else
+        {
+          user.feedAction[feedIndex].comments[commentIndex].moderationResponseTime = [clickedYes];
+          //console.log("!!!!!!!adding FIRST COMMENT flag time [0] now which is  ", user.feedAction[feedIndex].flagTime[0]);
+        }
+        user.feedAction[feedIndex].comments[commentIndex].moderationResponse = 'yes';
+
+      }
+
+      //RESPOND NO TO "DO YOU AGREE" WITH THE CONTENT MODERATION
+      else if(req.body.clickedNo)
+      {
+        let clickedNo = req.body.clickedNo - user.feedAction[feedIndex].startTime
+        console.log("!!!!!!New clickedNo Time: ", clickedNo);
+        if (user.feedAction[feedIndex].comments[commentIndex].moderationResponseTime)
+        {
+          user.feedAction[feedIndex].comments[commentIndex].moderationResponseTime.push(clickedNo);
+
+        }
+        else
+        {
+          user.feedAction[feedIndex].comments[commentIndex].moderationResponseTime = [clickedNo];
+          //console.log("!!!!!!!adding FIRST COMMENT flag time [0] now which is  ", user.feedAction[feedIndex].flagTime[0]);
+        }
+        user.feedAction[feedIndex].comments[commentIndex].moderationResponse = 'no';
+
+      }
+
     }//end of all comment junk
 
     //not a comment - its a post action

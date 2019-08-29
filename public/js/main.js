@@ -10,7 +10,7 @@ $(window).on("load", function() {
   $('#loading').hide();
   $('#content').attr('style', 'block');
   $('#content').fadeIn('slow');
-  //close messages from flash message 
+  //close messages from flash message
   $('.message .close')
   .on('click', function() {
     $(this)
@@ -22,9 +22,9 @@ $(window).on("load", function() {
   //check bell
   if (!(top.location.pathname === '/login' || top.location.pathname === '/signup'))
   {
-      
+
     $.getJSON( "/bell", function( json ) {
-      
+
       if (json.result)
       {
         $("i.big.alarm.icon").replaceWith( '<i class="big icons"><i class="red alarm icon"></i><i class="corner yellow lightning icon"></i></i>' );
@@ -45,7 +45,7 @@ $(window).on("load", function() {
 
   //get add new feed post modal to work
   $("#newpost, a.item.newpost").click(function () {
-    $(' .ui.tiny.post.modal').modal('show'); 
+    $(' .ui.tiny.post.modal').modal('show');
 });
 
   //new post validator (picture and text can not be empty)
@@ -86,7 +86,7 @@ $(window).on("load", function() {
   $('.ui.feed.form').submit(function(e) {
         e.preventDefault();
         console.log("Submit the junks!!!!")
-        //$('.ui.tiny.nudge.modal').modal('show'); 
+        //$('.ui.tiny.nudge.modal').modal('show');
         //return true;
         });
 
@@ -100,17 +100,17 @@ function readURL(input) {
                 $('#imgInp').attr('src', e.target.result);
                 //console.log("FILE is "+ e.target.result);
             }
-            
+
             reader.readAsDataURL(input.files[0]);
         }
     }
-    
+
     $("#picinput").change(function(){
         //console.log("@@@@@ changing a photo");
         readURL(this);
     });
 
-//Modal to show "other users" in Notifications 
+//Modal to show "other users" in Notifications
 /*
 $('a.others').click(function(){
   let key = $(this).attr('key');
@@ -122,18 +122,18 @@ $('a.others').click(function(){
       var lazyLoad = new LazyLoad({
          container: el /// <--- not sure if this works here, read below
     });
-      
-      
-      
+
+
+
     }
-  }).modal('show')  
+  }).modal('show')
 }); */
 
 //add humanized time to all posts
 $('.right.floated.time.meta, .date').each(function() {
     var ms = parseInt($(this).text(), 10);
     let time = new Date(ms);
-    $(this).text(humanized_time_span(time)); 
+    $(this).text(humanized_time_span(time));
 });
 
   //Sign Up Button
@@ -212,11 +212,11 @@ $("i.big.send.link.icon").click(function() {
     var ava_name = ava.attr( "name" );
     var postID = card.attr( "postID" );
 
-    var mess = '<div class="comment"> <a class="avatar"> <img src="'+ava_img+'"> </a> <div class="content"> <a class="author">'+ava_name+'</a> <div class="metadata"> <span class="date">'+humanized_time_span(date)+'</span> <i class="heart icon"></i> 0 Likes </div> <div class="text">'+text+'</div> <div class="actions"> <a class="like">Like</a> <a class="flag">Flag</a> </div> </div> </div>';   
+    var mess = '<div class="comment"> <a class="avatar"> <img src="'+ava_img+'"> </a> <div class="content"> <a class="author">'+ava_name+'</a> <div class="metadata"> <span class="date">'+humanized_time_span(date)+'</span> <i class="heart icon"></i> 0 Likes </div> <div class="text">'+text+'</div> <div class="actions"> <a class="like">Like</a> <a class="flag">Flag</a> </div> </div> </div>';
     $(this).siblings( "input.newcomment").val('');
     comments.append(mess);
     console.log("######### NEW COMMENTS:  PostID: "+postID+", new_comment time is "+date+" and text is "+text);
-   
+
     if (card.attr( "type" )=='userPost')
       $.post( "/userPost_feed", { postID: postID, new_comment: date, comment_text: text, _csrf : $('meta[name="csrf-token"]').attr('content') } );
     else
@@ -278,9 +278,9 @@ $("i.big.send.link.icon").click(function() {
     $('.ui.small.basic.blocked.modal')
       .modal({
         closable  : false,
-        onDeny    : function(){ 
+        onDeny    : function(){
           //report user
-          
+
         },
         onApprove : function() {
           //unblock user
@@ -290,7 +290,7 @@ $("i.big.send.link.icon").click(function() {
       .modal('show')
     ;
 
-    
+
     console.log("***********Block USER "+username);
     $.post( "/user", { blocked: username, _csrf : $('meta[name="csrf-token"]').attr('content') } );
 
@@ -300,9 +300,9 @@ $("i.big.send.link.icon").click(function() {
   $('.ui.on.small.basic.blocked.modal')
   .modal({
     closable  : false,
-    onDeny    : function(){ 
+    onDeny    : function(){
       //report user
-      
+
     },
     onApprove : function() {
       //unblock user
@@ -401,6 +401,34 @@ $("i.big.send.link.icon").click(function() {
 
   });
 
+  //this is the "yes" button when responding to the content moderation question
+ $('.agree')
+ .on('click', function() {
+
+   var comment = $(this).siblings( ".comment" );
+   var postID = $(this).closest( ".ui.fluid.card" ).attr( "postID" );
+   var typeID = $(this).closest( ".ui.fluid.card" ).attr( "type" );
+   var commentID = comment.attr("commentID");
+   var clickedYes = Date.now();
+   console.log("#########COMMENT FLAG:  PostID: "+postID+", Comment ID: "+commentID+"  TYPE is "+typeID+" at time "+clickedYes);
+   $.post( "/feed", { postID: postID, commentID: commentID, clickedYes: clickedYes, _csrf : $('meta[name="csrf-token"]').attr('content') } );
+
+ });
+
+ //this is the "no" button when responding to the content moderation question
+  $('.disagree')
+  .on('click', function() {
+    var comment = $(this).siblings( ".comment" );
+    var postID = $(this).closest( ".ui.fluid.card" ).attr( "postID" );
+    var typeID = $(this).closest( ".ui.fluid.card" ).attr( "type" );
+    var commentID = comment.attr("commentID");
+    var clickedNo = Date.now();
+    console.log("#########COMMENT FLAG:  PostID: "+postID+", Comment ID: "+commentID+"  TYPE is "+typeID+" at time "+clickedNo);
+
+    $.post( "/feed", { postID: postID, commentID: commentID, clickedNo: clickedNo, _csrf : $('meta[name="csrf-token"]').attr('content') } );
+
+  });
+
   //this is the POST FLAG button
   $('.flag.button')
   .on('click', function() {
@@ -415,12 +443,12 @@ $("i.big.send.link.icon").click(function() {
                    closable: false
                   })
                   .dimmer('show');
-      //repeat to ensure its closable             
+      //repeat to ensure its closable
       post.find(".ui.dimmer.flag").dimmer({
                    closable: false
                   })
                   .dimmer('show');
-    
+
 
   });
 
@@ -462,8 +490,8 @@ $("i.big.send.link.icon").click(function() {
     observeChanges: true,
     //throttle:100,
     offset: 250,
-    
-    //USER HAS NOW READ THE POST (READ EVENT) 
+
+    //USER HAS NOW READ THE POST (READ EVENT)
     //onBottomVisibleReverse:function(calculations) { onBottomPassed
       onBottomPassed:function(calculations) {
         console.log(":::::Now passing onBottomPassed:::::");
@@ -478,7 +506,7 @@ $("i.big.send.link.icon").click(function() {
           var read = Date.now();
 
           //actual show the element
-          
+
            parent.find('.read')
             .transition({
               animation: 'fade',
@@ -525,7 +553,7 @@ $("i.big.send.link.icon").click(function() {
     onBottomVisible:function(calculations) {
         console.log("@@@@@@@ Now Seen @@@@@@@@@");
         var parent = $(this).parents(".ui.fluid.card.dim, .profile_card");
-        
+
         var postID = parent.attr( "postID" );
         var start = Date.now();
         console.log("@@@@@@@ UI!!!! @@@@@@SENDING TO DB@@@@@@START POST UI has seen post "+postID+" at time "+start);
@@ -545,7 +573,7 @@ $("i.big.send.link.icon").click(function() {
     //transition : 'fade in',
     //duration   : 1000,
 
-    
+
   })
 ;
 */

@@ -142,6 +142,8 @@ const userSchema = new mongoose.Schema({
           comment: {type: Schema.ObjectId},//ID Reference for Script post comment
           liked: {type: Boolean, default: false}, //is liked?
           flagged: {type: Boolean, default: false},//is Flagged?
+          moderationResponse: {type: String, default: 'none'}, //If the user clicked 'yes', 'no', or no activity 'none' to the question "do you agree?"
+          moderationResponseTime: [Number], //array of moderation response times
           flagTime  : [Number], //array of flag times
           likeTime  : [Number], //array of like times
 
