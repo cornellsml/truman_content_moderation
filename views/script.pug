@@ -251,9 +251,19 @@ block content
                                 else
                                   a.like.comment Like
                                 a.flag.comment Flag
-                          .ui.header Our automated system has flagged this comment as harassment. Do you agree? 
-                          a.ui.button(href='#') Yes
-                          a.ui.button(href='#') No 
+                          //-Customizing the message based on the flag_group the current user is in
+                          if(user.flag_group === "none")
+                            .ui.header This comment has been flagged as harassment. Do you agree? 
+                            a.ui.button(href='#') Yes
+                            a.ui.button(href='#') No 
+                          if(user.flag_group === "ai")
+                            .ui.header Our automated system has flagged this comment as harassment. Do you agree? 
+                            a.ui.button(href='#') Yes
+                            a.ui.button(href='#') No 
+                          if(user.flag_group === "user")
+                            .ui.header Other users have flagged this comment as harassment. Do you agree? 
+                            a.ui.button(href='#') Yes
+                            a.ui.button(href='#') No 
 
                       else
                         .comment(commentID=comment.id)
