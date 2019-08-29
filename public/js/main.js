@@ -411,6 +411,9 @@ $("i.big.send.link.icon").click(function() {
    var commentID = comment.attr("commentID");
    var clickedYes = Date.now();
    console.log("#########COMMENT FLAG:  PostID: "+postID+", Comment ID: "+commentID+"  TYPE is "+typeID+" at time "+clickedYes);
+   $(this).siblings(".header").text("Thank you!");
+   $(this).hide();
+   $(this).siblings(".disagree").hide();
    $.post( "/feed", { postID: postID, commentID: commentID, clickedYes: clickedYes, _csrf : $('meta[name="csrf-token"]').attr('content') } );
 
  });
@@ -423,6 +426,9 @@ $("i.big.send.link.icon").click(function() {
     var typeID = $(this).closest( ".ui.fluid.card" ).attr( "type" );
     var commentID = comment.attr("commentID");
     var clickedNo = Date.now();
+    $(this).siblings(".header").text("Thank you!");
+    $(this).hide();
+    $(this).siblings(".agree").hide();
     console.log("#########COMMENT FLAG:  PostID: "+postID+", Comment ID: "+commentID+"  TYPE is "+typeID+" at time "+clickedNo);
 
     $.post( "/feed", { postID: postID, commentID: commentID, clickedNo: clickedNo, _csrf : $('meta[name="csrf-token"]').attr('content') } );
