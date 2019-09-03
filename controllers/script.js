@@ -41,8 +41,11 @@ exports.getScript = (req, res, next) => {
   var user_ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   var userAgent = req.headers['user-agent'];
 
-  var bully_post;
-  var bully_count = 0;
+  var bully_post_one;
+  var bully_count_one = 0;
+
+  var bully_post_two;
+  var bully_count_two = 0;
 
   var scriptFilter;
 
@@ -275,6 +278,28 @@ exports.getScript = (req, res, next) => {
               {
                 script_feed.splice(0,1);
               }
+              //post needs to be spliced in
+              else if ( script_feed[0].class == "ambig_flag"  && bully_count_one == 0 && user.bully_group === "ambig")
+              {
+                console.log("!@!@!@!@!Found a bully post and will push it");
+                bully_post_one = script_feed[0];
+                bully_count_one = 1;
+                script_feed.splice(0,1);
+              }
+              else if ( script_feed[0].class == "unambig_flag"  && bully_count_one == 0 && user.bully_group === "unambig")
+              {
+                console.log("!@!@!@!@!Found a bully post and will push it");
+                bully_post_one = script_feed[0];
+                bully_count_one = 1;
+                script_feed.splice(0,1);
+              }
+              else if ( script_feed[0].class == "unambig_none"  && bully_count_two == 0)
+              {
+                console.log("!@!@!@!@!Found a bully post and will push it");
+                bully_post_two = script_feed[0];
+                bully_count_two = 1;
+                script_feed.splice(0,1);
+              }
 
               else
               {
@@ -292,6 +317,28 @@ exports.getScript = (req, res, next) => {
               {
                 script_feed.splice(0,1);
               }
+              //post needs to be spliced in
+              else if ( script_feed[0].class == "ambig_flag"  && bully_count_one == 0 && user.bully_group === "ambig")
+              {
+                console.log("!@!@!@!@!Found a bully post and will push it");
+                bully_post_one = script_feed[0];
+                bully_count_one = 1;
+                script_feed.splice(0,1);
+              }
+              else if ( script_feed[0].class == "unambig_flag"  && bully_count_one == 0 && user.bully_group === "unambig")
+              {
+                console.log("!@!@!@!@!Found a bully post and will push it");
+                bully_post_one = script_feed[0];
+                bully_count_one = 1;
+                script_feed.splice(0,1);
+              }
+              else if ( script_feed[0].class == "unambig_none"  && bully_count_two == 0)
+              {
+                console.log("!@!@!@!@!Found a bully post and will push it");
+                bully_post_two = script_feed[0];
+                bully_count_two = 1;
+                script_feed.splice(0,1);
+              }
 
               else
               {
@@ -304,8 +351,21 @@ exports.getScript = (req, res, next) => {
 
 
       //shuffle up the list
-      //finalfeed = shuffle(finalfeed);
+      finalfeed = shuffle(finalfeed);
 
+      //splice in the bullying posts
+      if (bully_post_one)
+      {
+        var bully_index_one = Math.floor(Math.random() * 2) + 1
+        finalfeed.splice(bully_index_one, 0, bully_post_one);
+        console.log("@@@@@@@@@@ Pushed first Bully Post to index "+bully_index_one);
+      }
+      if (bully_post_two)
+      {
+        var bully_index_two = Math.floor(Math.random() * 4) + 6
+        finalfeed.splice(bully_index_two, 0, bully_post_two);
+        console.log("@@@@@@@@@@ Pushed second Bully Post to index "+bully_index_two);
+      }
 
       user.save((err) => {
         if (err) {

@@ -53,9 +53,9 @@ id,body,actor,reply,class,time
 53,where do you even get something like that ,earthpulse,87,marginal,06:00
 54,yum yum id like to eat that with you ;),Jcole9,111,marginal,-05:00
 55,that sweet of you. My mom loves the homemade cakes I make her for her birthdays.,coachmatthews,137,marginal,24:00
-56,"stop posting this shit, nobody cares",bblueberryy,42,bullying,-12:39
-57,your life is sad. look at what you eat,bblueberryy,45,bullying,11:42
-58,when will you get it into your head that nobody likes your stupid ass.,bblueberryy,48,bullying,25:43
+56,"stop posting this shit, nobody cares",bblueberryy,11,unambig_flag,-2:39
+57,your life is sad. look at what you eat,bblueberryy,19,ambig_flag,-5:42
+58,when will you get it into your head that nobody likes your stupid ass.,bblueberryy,23,unambig_none,-5:43
 59,"this photo is uglier than you, and thats saying something",bblueberryy,53,bullying,50:45
 60,"Love pizza, zucchini not so much. Still might have to give it a shot sometime though",SamTHEMAN,7,normal,33:22
 61,so good....bread is one of biggest weaknesses. Carbs are the enemy though...,SamTHEMAN,15,normal,50:30

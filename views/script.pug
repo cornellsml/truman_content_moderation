@@ -225,7 +225,7 @@ block content
                             a.flag.comment Flag
                     //- Else this is a normal comment from the script
                     else
-                      if (comment.class === "bullying")
+                      if ((comment.class === "unambig_flag" && user.bully_group === "unambig") || (comment.class === "ambig_flag" && user.bully_group === "ambig"))
                         //-This is a bullying actor comment that requires content moderation messaging
                         .ui.info.message
                           .comment(commentID=comment.id)
@@ -268,7 +268,9 @@ block content
                             .ui.header Other users have flagged this comment as harassment. Do you agree? 
                             a.ui.agree.button Yes
                             a.ui.disagree.button No 
-
+                      else if ((comment.class === "unambig_flag" && user.bully_group === "ambig") || (comment.class === "ambig_flag" && user.bully_group === "unambig"))
+                        //-do nothing, dont show the message. Only show the message that matches the bully group. 
+                          This should just be a safeguard since the "wrong" comment shouldn't even be spliced into the feed to begin with. 
                       else
                         //-.ui.info.message
                         
