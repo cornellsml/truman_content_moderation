@@ -234,6 +234,13 @@ exports.getScript = (req, res, next) => {
                           console.log("Comment %o has been LIKED", user.feedAction[feedIndex].comments[i].id);
                           script_feed[0].comments.splice(commentIndex,1);
                         }
+
+                        //Action is a content moderation response (user said yes/no to "do you agree?")
+                        if (user.feedAction[feedIndex].comments[i].moderationResponse !== "none")
+                        {
+                          console.log("Content moderation comment %o has been responed to", user.feedAction[feedIndex].comments[i].id);
+                          script_feed[0].comments.splice(commentIndex,1);
+                        }
                       }
                     }//end of ELSE
 
