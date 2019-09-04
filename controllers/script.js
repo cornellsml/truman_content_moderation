@@ -360,16 +360,29 @@ exports.getScript = (req, res, next) => {
       //shuffle up the list
       finalfeed = shuffle(finalfeed);
 
+      //randomly assigning the indeces for the bulling comments
+      var bully_index_one = Math.floor(Math.random() * 4) + 1 //random number between 1-4, not zero since we don't want it to be the very first post
+      var bully_index_two = Math.floor(Math.random() * 6) + 5 //random number between 5-10
+      console.log("$$$");
+      console.log("Index one: " + bully_index_one);
+      console.log("Index two: " + bully_index_two);
+
+      //guarantee that the two bullying comments have at least 2 posts between them
+      var space_between_bully_posts = bully_index_two - bully_index_one;
+      if(space_between_bully_posts <= 2){
+        console.log("###########Added more space!")
+        bully_index_two = bully_index_two + 2;
+      }
+      console.log("$$$");
       //splice in the bullying posts
       if (bully_post_one)
       {
-        var bully_index_one = Math.floor(Math.random() * 2) + 1
         finalfeed.splice(bully_index_one, 0, bully_post_one);
         console.log("@@@@@@@@@@ Pushed first Bully Post to index "+bully_index_one);
       }
       if (bully_post_two)
       {
-        var bully_index_two = Math.floor(Math.random() * 4) + 6
+
         finalfeed.splice(bully_index_two, 0, bully_post_two);
         console.log("@@@@@@@@@@ Pushed second Bully Post to index "+bully_index_two);
       }
