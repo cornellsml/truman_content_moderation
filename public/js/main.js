@@ -477,112 +477,40 @@ $("i.big.send.link.icon").click(function() {
 
 
 //////TESTING
-/*setTimeout(function() {
-  //.ui.fluid.card.test
-    $('.ui.fluid.card.test .content.read')
-      .transition({
-        animation: 'fade down',
-        duration   : '1.5s',
-      });
-      }.bind(this), 1500);
+$('.ui.fluid.card .img.post')
+.visibility({
+  once       : false,
+  continuous : false,
+  observeChanges: true,
+  //throttle:100,
+  initialCheck : true,
 
-  //Dimm cards as user scrolls - send Post to update DB on timing of events .image
-  //$('.ui.fluid.card.dim') img.post $('.ui.fluid.card.dim .image'
-  /*
-  $('img.post.s3, .content.pro.s3')
-  .visibility({
-    once       : false,
-    continuous : false,
-    observeChanges: true,
-    //throttle:100,
-    offset: 250,
+  onBottomVisible:function(calculations){
+    var startTime = Date.now();
+    //console.log(startTime);
+    $(this).siblings(".content").children(".myTimer").text(startTime);
+    //console.log($(this).siblings(".content").children(".myTimer").text());
+    if(calculations.topVisible){ //then we are scrolling DOWN normally and this is the START time
+      $(this).siblings(".content").children(".myTimer").text(startTime);
+      console.log("New start time!")
+      console.log($(this).siblings(".content").children(".description").text());
+    } else { //then we are scrolling UP and this event does not matter!
+      //do nothing
+    }
+  },
 
-    //USER HAS NOW READ THE POST (READ EVENT)
-    //onBottomVisibleReverse:function(calculations) { onBottomPassed
-      onBottomPassed:function(calculations) {
-        console.log(":::::Now passing onBottomPassed:::::");
-        var parent = $(this).parents(".ui.fluid.card.dim, .profile_card");
+  onTopPassed:function(calculations){
+    var endTime = Date.now();
+    //console.log(startTime);
+    var startTime = parseInt($(this).siblings(".content").children(".myTimer").text());
+    var totalViewTime = endTime - startTime;
+    console.log(totalViewTime);
+    console.log($(this).siblings(".content").children(".description").text());
+    
+  }
 
-        //As Post is not READ and We have a transparency condistion - Show Read Conent and send Post READ event
-        if ((!(parent.attr( "state" )=='read')) && (parent.attr( "transparency" )=='yes'))
-        {
-          console.log("::::UI passing::::Adding Seen Box Now::::::::");
+});
 
-          var postID = parent.attr( "postID" );
-          var read = Date.now();
-
-          //actual show the element
-
-           parent.find('.read')
-            .transition({
-              animation: 'fade',
-              duration   : '1.5s',
-            });
-          //$('img.post').visibility('refresh')  $('img.post, .content.pro').visibility('refresh')
-          //<div style="text-align:center;background:#b5bfce" class="content read"> <p>You've read this!</p><a href="/user/"><img src="/profile_pictures/" class="ui avatar image"><span>cat</span></a> has been notified.</div>
-          //parent.append( '<div style="text-align:center;background:#b5bfce" class="content read"> <p>You have read this!</p><a href="/user/'+parent.attr( "actor_un" )+'"><img src="/profile_pictures/'+parent.attr( "actor_pic" )+'" class="ui avatar image"><span>'+parent.attr( "actor_name" )+'</span></a> has been notified.</div>' );
-          parent.attr( "state", "read" );
-          console.log("::::UI passing::::SENDING POST TO DB::::::::");
-          $.post( "/feed", { postID: postID, read: read, _csrf : $('meta[name="csrf-token"]').attr('content') } );
-
-        }
-
-        //if we are not in UI condistion, and we are reading, then send off Post to DB for new Read Time
-        //Maybe kill this so we don't fill the DB with all this stuff. Seems kind of silly (or only do like 10, etc)
-        //else if ((parent.attr( "ui" )=='no') && (parent.attr( "state" )=='unread'))
-
-        //Need to get all "read" and "start" times in non-UI case (as all other times rests on it)
-        else if ((parent.attr( "transparency" )=='no'))
-        {
-          console.log("::::NO UI passing:::");
-          //console.log("::::first time reading -> UNREAD:::");
-          var postID = parent.attr( "postID" );
-          var read = Date.now();
-          //set to read now
-          //parent.attr( "state" , "read");
-
-          //send post to server to update DB that we have now read this
-          console.log("::::NO UI :::::READ::::SENDING POST TO DB:::::::POST:"+postID+" at time "+read);
-          if (parent.attr( "profile" )=="yes")
-            $.post( "/pro_feed", { postID: postID, read: read, _csrf : $('meta[name="csrf-token"]').attr('content') } );
-          else
-            $.post( "/feed", { postID: postID, read: read, _csrf : $('meta[name="csrf-token"]').attr('content') } );
-        }
-
-        //UI and DIMMED READ, which does not count as a READ
-        else
-          {console.log("::::passing::::Already dimmed - do nothing - transparency is now "+parent.attr( "transparency" ));}
-
-      },
-
-    ////POST IS NOW Visiable - START EVENT
-    onBottomVisible:function(calculations) {
-        console.log("@@@@@@@ Now Seen @@@@@@@@@");
-        var parent = $(this).parents(".ui.fluid.card.dim, .profile_card");
-
-        var postID = parent.attr( "postID" );
-        var start = Date.now();
-        console.log("@@@@@@@ UI!!!! @@@@@@SENDING TO DB@@@@@@START POST UI has seen post "+postID+" at time "+start);
-        if (parent.attr( "profile" )=="yes")
-          $.post( "/pro_feed", { postID: postID, start: start, _csrf : $('meta[name="csrf-token"]').attr('content') } );
-        else
-          $.post( "/feed", { postID: postID, start: start, _csrf : $('meta[name="csrf-token"]').attr('content') } );
-
-        }
-  })
-;//WTF!!!
-//lazy loading of images
-  $('.img.post img')
-  .visibility({
-    type       : 'image'
-    //offset: 450,
-    //transition : 'fade in',
-    //duration   : 1000,
-
-
-  })
-;
-*/
 
 
 
