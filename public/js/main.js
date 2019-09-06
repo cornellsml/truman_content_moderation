@@ -485,28 +485,43 @@ $('.ui.fluid.card .img.post')
   //throttle:100,
   initialCheck : true,
 
+//handling scrolling down like normal
   onBottomVisible:function(calculations){
     var startTime = Date.now();
-    //console.log(startTime);
     $(this).siblings(".content").children(".myTimer").text(startTime);
-    //console.log($(this).siblings(".content").children(".myTimer").text());
     if(calculations.topVisible){ //then we are scrolling DOWN normally and this is the START time
       $(this).siblings(".content").children(".myTimer").text(startTime);
-      console.log("New start time!")
-      console.log($(this).siblings(".content").children(".description").text());
     } else { //then we are scrolling UP and this event does not matter!
-      //do nothing
     }
   },
 
   onTopPassed:function(calculations){
     var endTime = Date.now();
-    //console.log(startTime);
     var startTime = parseInt($(this).siblings(".content").children(".myTimer").text());
-    var totalViewTime = endTime - startTime;
-    console.log(totalViewTime);
+    var totalViewTime = endTime - startTime; //TOTAL TIME HERE
+    console.log("Total time: " + totalViewTime);
     console.log($(this).siblings(".content").children(".description").text());
-    
+  },
+
+//handling scrolling back upwards
+  onTopPassedReverse:function(calculations){
+    var startTime = Date.now();
+    $(this).siblings(".content").children(".myTimer").text(startTime);
+  },
+
+  onBottomVisibleReverse:function(calculations){
+    if(calculations.bottomPassed){
+
+    } else {
+      //eND TIME FOR SCROLLING UP
+      var endTime = Date.now();
+      var startTime = parseInt($(this).siblings(".content").children(".myTimer").text());
+      var totalViewTime = endTime - startTime;
+      console.log("Total time: " + totalViewTime);
+      console.log($(this).siblings(".content").children(".description").text());
+    }
+
+
   }
 
 });
