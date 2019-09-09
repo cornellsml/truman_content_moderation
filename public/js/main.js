@@ -499,9 +499,15 @@ $('.ui.fluid.card .img.post')
     var endTime = Date.now();
     var startTime = parseInt($(this).siblings(".content").children(".myTimer").text());
     var totalViewTime = endTime - startTime; //TOTAL TIME HERE
+    //POST HERE
+    var parent = $(this).parents(".ui.fluid.card");
+    var postID = parent.attr( "postID" );
+    console.log(postID);
+    $.post( "/feed", { postID: postID, viewed: totalViewTime, _csrf : $('meta[name="csrf-token"]').attr('content') } );
     console.log("Total time: " + totalViewTime);
     console.log($(this).siblings(".content").children(".description").text());
   },
+//end handling downward scrolling
 
 //handling scrolling back upwards
   onTopPassedReverse:function(calculations){
@@ -516,17 +522,20 @@ $('.ui.fluid.card .img.post')
       //eND TIME FOR SCROLLING UP
       var endTime = Date.now();
       var startTime = parseInt($(this).siblings(".content").children(".myTimer").text());
-      var totalViewTime = endTime - startTime;
+      var totalViewTime = endTime - startTime; //TOTAL TIME HERE
+      //POST HERE
+      var parent = $(this).parents(".ui.fluid.card");
+      var postID = parent.attr( "postID" );
+      console.log("PostID: " + postID);
+      console.log(postID);
+      $.post( "/feed", { postID: postID, viewed: totalViewTime, _csrf : $('meta[name="csrf-token"]').attr('content') } );
       console.log("Total time: " + totalViewTime);
       console.log($(this).siblings(".content").children(".description").text());
     }
-
+//end handling scrolling back updwards
 
   }
 
 });
-
-
-
 
 });

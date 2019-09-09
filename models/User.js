@@ -137,6 +137,7 @@ const userSchema = new mongoose.Schema({
         flagTime  : [Number],
         likeTime  : [Number],
         replyTime  : [Number],
+        viewedTime : [Number], //how long the user spent looking at the post (does not record times less than 1.5 seconds)
 
         comments: [new Schema({
           comment: {type: Schema.ObjectId},//ID Reference for Script post comment

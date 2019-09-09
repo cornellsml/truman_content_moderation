@@ -820,6 +820,22 @@ exports.postUpdateFeedAction = (req, res, next) => {
         user.feedAction[feedIndex].replyTime.push(reply);
       }
 
+//NEW VIEW TIME APPROACH POSTS
+      //array of viewedTimes is empty and we have a new VIEW event
+      else if ((!user.feedAction[feedIndex].viewedTime) && req.body.viewed)
+      {
+        let viewedTime = req.body.viewed;
+        user.feedAction[feedIndex].viewedTime = [viewedTime];
+      }
+
+      //Already have a viewedTime Array, New VIEW event, need to add this to readTime array
+      else if ((user.feedAction[feedIndex].viewedTime)&&req.body.viewed)
+      {
+        let viewedTime = req.body.viewed;
+        //console.log("%%%%%Add new Read Time: ", read);
+        user.feedAction[feedIndex].viewedTime.push(viewedTime);
+      }
+
       else
       {
         console.log("Got a POST that did not fit anything. Possible Error.")
@@ -897,6 +913,7 @@ exports.postUpdateProFeedAction = (req, res, next) => {
         user.profile_feed[feedIndex].rereadTimes++;
 
       }
+//OLD READ TIME APPROACH
 
       //array of readTimes is empty and we have a new READ event
       else if ((!user.profile_feed[feedIndex].readTime)&&req.body.read && (req.body.read > user.profile_feed[feedIndex].startTime))
@@ -907,6 +924,7 @@ exports.postUpdateProFeedAction = (req, res, next) => {
         //console.log("!!!!!adding FIRST READ time [0] now which is  ", user.feedAction[feedIndex].readTime[0]);
       }
 
+
       //Already have a readTime Array, New READ event, need to add this to readTime array
       else if ((user.profile_feed[feedIndex].readTime)&&req.body.read && (req.body.read > user.profile_feed[feedIndex].startTime))
       {
@@ -914,6 +932,7 @@ exports.postUpdateProFeedAction = (req, res, next) => {
         //console.log("%%%%%Add new Read Time: ", read);
         user.profile_feed[feedIndex].readTime.push(read);
       }
+
 
       //array of picture_clicks is empty and we have a new (first) picture_clicks event
       else if ((!user.profile_feed[feedIndex].picture_clicks)&&req.body.picture && (req.body.picture > user.profile_feed[feedIndex].startTime))
@@ -932,12 +951,30 @@ exports.postUpdateProFeedAction = (req, res, next) => {
         user.profile_feed[feedIndex].picture_clicks.push(picture);
       }
 
+//NEW VIEW TIME APPROACH POSTS
+      /*//array of viewedTimes is empty and we have a new VIEW event
+      else if ((!user.profile_feed[feedIndex].viewedTime) && req.body.viewed)
+      {
+        let viewedTime = req.body.viewed;
+        user.profile_feed[feedIndex].viewedTime = [viewedTime];
+        console.log("@@@@@@@@added viewTime@@@@@@@");
+      }
+
+      //Already have a viewedTime Array, New VIEW event, need to add this to readTime array
+      else if ((user.profile_feed[feedIndex].viewedTime)&&req.body.viewed)
+      {
+        let viewedTime = req.body.viewed;
+        //console.log("%%%%%Add new Read Time: ", read);
+        user.profile_feed[feedIndex].viewedTime.push(viewedTime);
+        console.log("@@@@@@@@added viewTime@@@@@@@");
+      }*/
+
       else
       {
         console.log("Got a POST that did not fit anything. Possible Error.")
       }
 
-       //console.log("####### END OF ELSE post at index "+ feedIndex);
+
 
     }//else
 
