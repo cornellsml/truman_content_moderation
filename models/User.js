@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema({
 
   study_days: {
       type: [Number],
-      default: [0, 0, 0]
+      default: [0, 0]
     },
 
   posts: [new Schema({
@@ -240,7 +240,7 @@ userSchema.methods.logPostStats = function logPage(postID) {
         {
           log.DayOneVists = this.study_days[0];
           log.DayTwoVists = this.study_days[1];
-          log.DayThreeVists = this.study_days[2];
+          //log.DayThreeVists = this.study_days[2];
         }
 
     log.GeneralLikeNumber = this.numPostLikes + this.numCommentLikes;

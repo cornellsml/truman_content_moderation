@@ -72,22 +72,22 @@ mongoose.connection.on('error', (err) => {
 
 User.find()
   .where('active').equals(false)
-  .populate({ 
+  .populate({
          path: 'feedAction.post',
          model: 'Script',
          populate: {
            path: 'actor',
            model: 'Actor'
-         } 
+         }
       })
-  .exec(    
+  .exec(
     function(err, users){
 
       mlm_writer.pipe(fs.createWriteStream('results/mlm_eatsnaplove.csv'));
       s_writer.pipe(fs.createWriteStream('results/posts_eatsnaplove.csv'));
       summary_writer.pipe(fs.createWriteStream('results/sum_eatsnaplove.csv'));
 
-      for (var i = users.length - 1; i >= 0; i--) 
+      for (var i = users.length - 1; i >= 0; i--)
       {
 
         var mlm = {};
@@ -111,7 +111,7 @@ User.find()
 
         //UI - transparency script_type: String, //type of script they are running in
         //post_nudge: String,
-        
+
         mlm.script_type = users[i].script_type;
         sums.script_type = users[i].script_type;
 
@@ -183,9 +183,9 @@ User.find()
           }
           else
             mlm.Device = "Computer";
-        
 
-        
+
+
           //sur.Device = mlm.Device;
 
           mlm.Broswer = parser.setUA(users[i].log[0].userAgent).getBrowser().name;
@@ -199,7 +199,7 @@ User.find()
           mlm.Broswer = "NA";
           mlm.OS = "NA";
         }
-        
+
 
         mlm.notificationpage = 0;
         mlm.generalpagevisit = 0;
@@ -209,7 +209,7 @@ User.find()
             else
               mlm.generalpagevisit++;
         }
-        
+
 
         mlm.citevisits = users[i].log.length;
         sums.citevisits = users[i].log.length;
@@ -231,11 +231,11 @@ User.find()
         {
           mlm.DayOneVists = users[i].study_days[0];
           mlm.DayTwoVists = users[i].study_days[1];
-          mlm.DayThreeVists = users[i].study_days[2];
+          //mlm.DayThreeVists = users[i].study_days[2];
 
           sums.DayOneVists = users[i].study_days[0];
           sums.DayTwoVists = users[i].study_days[1];
-          sums.DayThreeVists = users[i].study_days[2];
+          //sums.DayThreeVists = users[i].study_days[2];
         }
 
         //per feedAction
@@ -257,8 +257,8 @@ User.find()
         sur.GeneralCommentNumber = -1;
 
         console.log("User has "+ users[i].posts.length+" Posts");
-        for (var pp = users[i].posts.length - 1; pp >= 0; pp--) 
-        { 
+        for (var pp = users[i].posts.length - 1; pp >= 0; pp--)
+        {
           var temp_post = {};
           temp_post = JSON.parse(JSON.stringify(sur));
 
@@ -288,15 +288,15 @@ User.find()
 
           sur_array.push(temp_post);
         }
-        
+
         //per feedAction
-        for (var k = users[i].feedAction.length - 1; k >= 0; k--) 
+        for (var k = users[i].feedAction.length - 1; k >= 0; k--)
         {
           //is a bully Victim message
           //if(users[i].feedAction[k].post.id == bully_messages[0] || users[i].feedAction[k].post.id == bully_messages[1] || users[i].feedAction[k].post.id == bully_messages[2]||users[i].feedAction[k].post.id == bully_messages[3])
           //console.log("Look up action ID: "+users[i].feedAction[k].id);
           //console.log("Look up action POST : "+users[i].feedAction[k].post);
-          
+
           //console.log(util.inspect(users[i].feedAction[k], false, null))
           if(users[i].feedAction[k].post == null)
           {
@@ -304,7 +304,7 @@ User.find()
           }
 
           //not a bully message
-          else 
+          else
           {
 
             //total number of likes
@@ -327,7 +327,7 @@ User.find()
       //mlm.GeneralReplyNumber = users[i].numReplies + 1;
       mlm.GeneralPostNumber = users[i].numPosts + 1;
       mlm.GeneralCommentNumber = users[i].numComments + 1;
-        
+
 
 
       sums.GeneralPostNumber = mlm.GeneralPostNumber;
@@ -354,7 +354,7 @@ User.find()
       console.log("writing Post for user "+ zz);
       s_writer.write(sur_array[zz]);
     }
-      
+
     mlm_writer.end();
     summary_writer.end();
     s_writer.end();
@@ -362,4 +362,3 @@ User.find()
     mongoose.connection.close();
 
   });
-

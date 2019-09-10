@@ -97,7 +97,6 @@ exports.getScript = (req, res, next) => {
   {
     current_day = 0;
     //add one to current day user.study_days[current_day]
-    user.study_days[0] = user.study_days[0] + 1;
     user.study_days.set(0, user.study_days[0] + 1)
     //console.log("!!!DAY1 is now "+ user.study_days[0]);
   }
@@ -108,13 +107,13 @@ exports.getScript = (req, res, next) => {
     user.study_days.set(1, user.study_days[1] + 1)
     //console.log("!!!DAY2 is now "+ user.study_days[1]);
   }
-  //day 3
-  else if ((time_diff >(one_day *2)))
+  //Would be day 3 but we only want 2
+  /*else if ((time_diff >(one_day *2)))
   {
     current_day = 2;
     user.study_days.set(2, user.study_days[2] + 1)
     //console.log("!!!DAY3 is now "+ user.study_days[2]);
-  }
+  }*/
   else
   {
     current_day = -1;
@@ -175,7 +174,7 @@ exports.getScript = (req, res, next) => {
 
             if(feedIndex!=-1)
             {
-              console.log("WE HAVE AN ACTION!!!!!");
+              //console.log("WE HAVE AN ACTION!!!!!");
 
               //check to see if there are comments - if so remove ones that are not in time yet.
               //Do all comment work here for feed
@@ -248,7 +247,7 @@ exports.getScript = (req, res, next) => {
 
               }//end of IF Comments
 
-              if (user.feedAction[feedIndex].readTime[0])
+              if (user.feedAction[feedIndex].viewedTime[0])
               {
                 script_feed[0].read = true;
                 script_feed[0].state = 'read';
@@ -408,7 +407,7 @@ exports.getScript = (req, res, next) => {
 exports.getScriptPost = (req, res) => {
 
 	Script.findOne({ _id: req.params.id}, (err, post) => {
-		console.log(post);
+		//console.log(post);
 		res.render('script_post', { post: post });
 	});
 };
@@ -914,7 +913,7 @@ exports.postUpdateProFeedAction = (req, res, next) => {
 
       }
 //OLD READ TIME APPROACH
-
+/*
       //array of readTimes is empty and we have a new READ event
       else if ((!user.profile_feed[feedIndex].readTime)&&req.body.read && (req.body.read > user.profile_feed[feedIndex].startTime))
       {
@@ -932,7 +931,7 @@ exports.postUpdateProFeedAction = (req, res, next) => {
         //console.log("%%%%%Add new Read Time: ", read);
         user.profile_feed[feedIndex].readTime.push(read);
       }
-
+*/
 
       //array of picture_clicks is empty and we have a new (first) picture_clicks event
       else if ((!user.profile_feed[feedIndex].picture_clicks)&&req.body.picture && (req.body.picture > user.profile_feed[feedIndex].startTime))
