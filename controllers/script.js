@@ -32,11 +32,11 @@ exports.getScript = (req, res, next) => {
 
   //req.user.createdAt
   var time_now = Date.now();
-  var time_diff = time_now - req.user.createdAt;
+  var time_diff = time_now - req.user.createdAt; //how long the user has existed since the start of their timeline
   //var today = moment();
   //var tomorrow = moment(today).add(1, 'days');
   var two_days = 86400000 * 2; //two days in milliseconds
-  var time_limit = time_diff - two_days;
+  var time_limit = 86400000;
 
   var user_ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   var userAgent = req.headers['user-agent'];
