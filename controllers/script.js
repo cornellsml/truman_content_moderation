@@ -72,8 +72,8 @@ exports.getScript = (req, res, next) => {
     })
   .exec(function (err, user) {
 
-    //filter the script based on experimental group
-    scriptFilter = user.group;
+    //DON'T filter the script based on experimental group
+    //scriptFilter = user.group;
 
 
 
