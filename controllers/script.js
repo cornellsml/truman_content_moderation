@@ -235,9 +235,15 @@ exports.getScript = (req, res, next) => {
                         }
 
                         //Action is a content moderation response (user said yes/no to "do you agree?")
-                        if (user.feedAction[feedIndex].comments[i].moderationResponse !== "none")
+                        /*if (user.feedAction[feedIndex].comments[i].moderationResponse !== "none")
                         {
                           console.log("Content moderation comment %o has been responed to", user.feedAction[feedIndex].comments[i].id);
+                          script_feed[0].comments.splice(commentIndex,1);
+                        }*/
+                        //Action is a 'yes' content moderation response - remove the comment
+                        if (user.feedAction[feedIndex].comments[i].moderationResponse === "yes")
+                        {
+                          console.log("Content moderation comment %o has been responed to with a yes", user.feedAction[feedIndex].comments[i].id);
                           script_feed[0].comments.splice(commentIndex,1);
                         }
                       }
@@ -715,12 +721,12 @@ exports.postUpdateFeedAction = (req, res, next) => {
       //RESPOND YES TO "DO YOU AGREE" WITH THE CONTENT MODERATION
       else if(req.body.clickedYes)
       {
-        let clickedYes = req.body.clickedYes - user.feedAction[feedIndex].startTime
+        //let clickedYes = req.body.clickedYes - user.feedAction[feedIndex].startTime
+        let clickedYes = req.body.clickedYes - user.createdAt;
         console.log("!!!!!!New clickedYes Time: ", clickedYes);
         if (user.feedAction[feedIndex].comments[commentIndex].moderationResponseTime)
         {
           user.feedAction[feedIndex].comments[commentIndex].moderationResponseTime.push(clickedYes);
-
         }
         else
         {
@@ -728,18 +734,23 @@ exports.postUpdateFeedAction = (req, res, next) => {
           //console.log("!!!!!!!adding FIRST COMMENT flag time [0] now which is  ", user.feedAction[feedIndex].flagTime[0]);
         }
         user.feedAction[feedIndex].comments[commentIndex].moderationResponse = 'yes';
+        if(clickedYes <= 86400000){
+          user.day1Response = 'yes';
+        } else if (clickedYes > 86400000) {
+          user.day2Response = 'yes';
+        }
 
       }
 
       //RESPOND NO TO "DO YOU AGREE" WITH THE CONTENT MODERATION
       else if(req.body.clickedNo)
       {
-        let clickedNo = req.body.clickedNo - user.feedAction[feedIndex].startTime
+        //let clickedNo = req.body.clickedNo - user.feedAction[feedIndex].startTime
+        let clickedNo = req.body.clickedNo - user.createdAt;
         console.log("!!!!!!New clickedNo Time: ", clickedNo);
         if (user.feedAction[feedIndex].comments[commentIndex].moderationResponseTime)
         {
           user.feedAction[feedIndex].comments[commentIndex].moderationResponseTime.push(clickedNo);
-
         }
         else
         {
@@ -747,6 +758,11 @@ exports.postUpdateFeedAction = (req, res, next) => {
           //console.log("!!!!!!!adding FIRST COMMENT flag time [0] now which is  ", user.feedAction[feedIndex].flagTime[0]);
         }
         user.feedAction[feedIndex].comments[commentIndex].moderationResponse = 'no';
+        if(clickedNo <= 86400000){
+          user.day1Response = 'no';
+        } else if (clickedNo > 86400000) {
+          user.day2Response = 'no';
+        }
 
       }
 

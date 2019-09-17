@@ -4,6 +4,9 @@ block content
 
   //-Change this URI to a CDN you are using for Photos
   -var cdn = "";
+  -var currentDay = "";
+  -var dateNow = Date.now();
+  
   .computer.only.tablet.only.four.wide.column 
     .ui.card
       .image
@@ -226,9 +229,48 @@ block content
                             a.flag.comment Flag
                     //- Else this is a normal comment from the script
                     else
-                      if ((comment.class === "unambig_flag" && user.bully_group === "unambig") || (comment.class === "ambig_flag" && user.bully_group === "ambig"))
-                        //-This is a bullying actor comment that requires content moderation messaging
-                        .ui.info.message
+                      if (((comment.class === "unambig_flag") && (user.bully_group === "unambig")) || ((comment.class === "ambig_flag") && (user.bully_group === "ambig")))
+                        if (((dateNow - user.createdAt) <= 86400000) && (user.day1Response === "none")) || (((dateNow - user.createdAt) > 86400000) && (user.day2Response == "none"))
+                          //-This is a bullying actor comment that requires content moderation messaging
+                          .ui.info.message
+                            .comment(commentID=comment.id)
+                              a.avatar(href='/user/'+comment.actor.username)
+                                //-img(src=cdn+'/profile_pictures/'+comment.actor.profile.picture)                       
+                                img(src=cdn+"/profile_pictures/"+comment.actor.profile.picture)
+                              .content
+                                a.author(href='/user/'+comment.actor.username)=comment.actor.profile.name
+                                .metadata
+                                  span.date=(user.createdAt.getTime() + comment.time)
+                                  .rating
+                                    if comment.liked
+                                      i.red.heart.icon
+                                      span=comment.likes
+                                      |  Likes 
+                                    else
+                                      i.heart.icon
+                                      span.num=comment.likes
+                                      |  Likes
+                                .text=comment.body
+                                .actions
+                                  if comment.liked
+                                    a.red.like.comment Like
+                                  else
+                                    a.like.comment Like
+                                  a.flag.comment Flag
+                            //-Customizing the message based on the flag_group the current user is in 
+                            if(user.flag_group === "none")
+                              .ui.header This comment has been flagged as harassment. Do you agree? 
+                              a.ui.agree.button Yes
+                              a.ui.disagree.button No 
+                            if(user.flag_group === "ai")
+                              .ui.header Our automated system has flagged this comment as harassment. Do you agree? 
+                              a.ui.agree.button Yes
+                              a.ui.disagree.button No 
+                            if(user.flag_group === "user")
+                              .ui.header Other users have flagged this comment as harassment. Do you agree? 
+                              a.ui.agree.button Yes
+                              a.ui.disagree.button No 
+                        else 
                           .comment(commentID=comment.id)
                             a.avatar(href='/user/'+comment.actor.username)
                               //-img(src=cdn+'/profile_pictures/'+comment.actor.profile.picture)                       
@@ -253,28 +295,11 @@ block content
                                 else
                                   a.like.comment Like
                                 a.flag.comment Flag
-                          //-Customizing the message based on the flag_group the current user is in 
-                          if(user.flag_group === "none")
-                            
-                            .ui.header This comment has been flagged as harassment. Do you agree? 
-                            a.ui.agree.button Yes
-                            a.ui.disagree.button No 
-                          if(user.flag_group === "ai")
-                            
-                            .ui.header Our automated system has flagged this comment as harassment. Do you agree? 
-                            a.ui.agree.button Yes
-                            a.ui.disagree.button No 
-                          if(user.flag_group === "user")
-                          
-                            .ui.header Other users have flagged this comment as harassment. Do you agree? 
-                            a.ui.agree.button Yes
-                            a.ui.disagree.button No 
                       else if ((comment.class === "unambig_flag" && user.bully_group === "ambig") || (comment.class === "ambig_flag" && user.bully_group === "unambig"))
                         //-do nothing, dont show the message. Only show the message that matches the bully group. 
                           This should just be a safeguard since the "wrong" comment shouldn't even be spliced into the feed to begin with. 
                       else
                         //-.ui.info.message
-                        
                         //-This is a regular actor comment with no special messaging
                         .comment(commentID=comment.id)
                           a.avatar(href='/user/'+comment.actor.username)
@@ -300,19 +325,6 @@ block content
                               else
                                 a.like.comment Like
                               a.flag.comment Flag
-                        //-Customizing the message based on the flag_group the current user is in (can uncomment to add to regular comments just for testing)
-                        //-if(user.flag_group === "none")
-                          .ui.header This comment has been flagged as harassment. Do you agree? 
-                          a.ui.agree.button Yes
-                          a.ui.disagree.button No 
-                        //-if(user.flag_group === "ai")
-                          .ui.header Our automated system has flagged this comment as harassment. Do you agree? 
-                          a.ui.agree.button Yes
-                          a.ui.disagree.button No 
-                        //-if(user.flag_group === "user")
-                          .ui.header Other users have flagged this comment as harassment. Do you agree? 
-                          a.ui.agree.button Yes
-                          a.ui.disagree.button No 
 
           .extra.content
             .ui.fluid.left.labeled.right.icon.input

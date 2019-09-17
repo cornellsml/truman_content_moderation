@@ -30,6 +30,8 @@ const userSchema = new mongoose.Schema({
   moderation_group: String, //Full group type for the content moderation study
   flag_group: String, //Flag type (ai, user, none)
   bully_group: String, //Type of bullying group (ambig, unambig)
+  day1Response: {type: String, default: 'none'}, //this is the same as moderationResponse in feedAction, just for simple access in script.pug
+  day2Response: {type: String, default: 'none'},
   ui: String,    //just UI type (no or ui)
   notify: String, //notification type (no, low or high)
   script_type: String, //type of script they are running in
