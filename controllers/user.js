@@ -201,7 +201,7 @@ Place Experimental Varibles Here!
     if(bully_group === "ambig"){
       surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd";
     } else if (bully_group === "unambig")  {
-      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd;
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd";
     }
   } else if (flag_group === "none"){
     if(bully_group === "ambig"){
