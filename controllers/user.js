@@ -122,7 +122,7 @@ exports.postLogin = (req, res, next) => {
     if (!(user.active)) {
       console.log("FINAL");
       //Need to capture this in a var
-      var post_url = process.env.POST_SURVEY+user.mturkID;
+      var post_url = user.endSurveyLink+user.mturkID;
       console.log("last url is "+post_url)
       req.flash('final', { msg: post_url });
       return res.redirect('/login');
@@ -190,6 +190,33 @@ Place Experimental Varibles Here!
 
   var resultArray = result.split(':');
   //[0] is script_type, [1] is post_nudge
+
+  //assigning the correct survey link according to the study group
+
+  var flag_group = resultArray[0];
+  var bully_group = resultArray[1];
+  var surveyLink = '';
+
+  if (flag_group === "ai"){
+    if(bully_group === "ambig"){
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd";
+    } else if (bully_group === "unambig")  {
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd;
+    }
+  } else if (flag_group === "none"){
+    if(bully_group === "ambig"){
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd";
+    } else if (bully_group === "unambig") {
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd";
+    }
+  } else if (flag_group === "user"){
+    if(bully_group === "ambig"){
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd";
+    } else if (bully_group === "unambig"){
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd";
+    }
+  }
+
   const user = new User({
     email: req.body.email,
     password: req.body.password,
@@ -199,6 +226,7 @@ Place Experimental Varibles Here!
     moderation_group: result,
     flag_group: resultArray[0],
     bully_group: resultArray[1],
+    endSurveyLink: surveyLink,
     active: true,
     lastNotifyVisit : (Date.now()),
     createdAt: (Date.now())
@@ -582,7 +610,7 @@ var sendFinalEmail = function(user){
       text: `Hey ${u_name},\n\n
       Thank you so much for participating in our study!\n
       Your participation has been a huge help in beta testing our app.
-      You have one last task to finish the study, and that is to take the final survey here at  `+process.env.POST_SURVEY+user.mturkID+`\n\n
+      You have one last task to finish the study, and that is to take the final survey here at  `+user.endSurveyLink+user.mturkID+`\n\n
       Thanks again for all your help and participation!\n
       Keep Eating, Snapping and Loving!\n
       🍴📷.❤️ Team
@@ -737,7 +765,7 @@ exports.userTestResults = (req, res) => {
             }//end of LOG for loop
 
             console.log("@@@@@@@@days are d1:"+day[0]+" d2:"+day[1]+" d3:"+day[2]);
-            
+
             //Logged in at least twice a day, and posted at least 2 times
             */
             if (users[i].study_days[0] >=2 && users[i].study_days[1] >=2 && users[i].numPosts >= 2)

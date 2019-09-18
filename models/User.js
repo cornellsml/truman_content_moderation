@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   username: String,
   active: {type: Boolean, default: true},
   isAdmin: {type: Boolean, default: false},
+  endSurveyLink: String,
 
   completed: {type: Boolean, default: false},
 
