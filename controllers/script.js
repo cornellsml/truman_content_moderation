@@ -291,23 +291,16 @@ exports.getScript = (req, res, next) => {
                 script_feed.splice(0,1);
               }
               //post needs to be spliced in
-              else if ( script_feed[0].class == "ambig_flag"  && bully_count_one == 0 && user.bully_group === "ambig")
+              else if ( script_feed[0].class == "flag"  && bully_count_one == 0)
               {
-                console.log("!@!@!@!@!Found a bully post and will push it");
+                console.log("!@!@!@!@!Found a flagged bully post and will push it");
                 bully_post_one = script_feed[0];
                 bully_count_one = 1;
                 script_feed.splice(0,1);
               }
-              else if ( script_feed[0].class == "unambig_flag"  && bully_count_one == 0 && user.bully_group === "unambig")
+              else if ( script_feed[0].class == "no_flag"  && bully_count_two == 0)
               {
-                console.log("!@!@!@!@!Found a bully post and will push it");
-                bully_post_one = script_feed[0];
-                bully_count_one = 1;
-                script_feed.splice(0,1);
-              }
-              else if ( script_feed[0].class == "unambig_none"  && bully_count_two == 0)
-              {
-                console.log("!@!@!@!@!Found a bully post and will push it");
+                console.log("!@!@!@!@!Found an unflagged bully post and will push it");
                 bully_post_two = script_feed[0];
                 bully_count_two = 1;
                 script_feed.splice(0,1);
@@ -330,23 +323,16 @@ exports.getScript = (req, res, next) => {
                 script_feed.splice(0,1);
               }
               //post needs to be spliced in
-              else if ( script_feed[0].class == "ambig_flag"  && bully_count_one == 0 && user.bully_group === "ambig")
+              else if ( script_feed[0].class == "flag"  && bully_count_one == 0)
               {
-                console.log("!@!@!@!@!Found a bully post and will push it");
+                console.log("!@!@!@!@!Found a flagged bully post and will push it (a)");
                 bully_post_one = script_feed[0];
                 bully_count_one = 1;
                 script_feed.splice(0,1);
               }
-              else if ( script_feed[0].class == "unambig_flag"  && bully_count_one == 0 && user.bully_group === "unambig")
+              else if ( script_feed[0].class == "no_flag"  && bully_count_two == 0)
               {
-                console.log("!@!@!@!@!Found a bully post and will push it");
-                bully_post_one = script_feed[0];
-                bully_count_one = 1;
-                script_feed.splice(0,1);
-              }
-              else if ( script_feed[0].class == "unambig_none"  && bully_count_two == 0)
-              {
-                console.log("!@!@!@!@!Found a bully post and will push it");
+                console.log("!@!@!@!@!Found an flagged bully post and will push it(a)");
                 bully_post_two = script_feed[0];
                 bully_count_two = 1;
                 script_feed.splice(0,1);
