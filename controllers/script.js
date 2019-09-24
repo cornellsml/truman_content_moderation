@@ -47,6 +47,9 @@ exports.getScript = (req, res, next) => {
   var bully_post_two;
   var bully_count_two = 0;
 
+  var new_user_post;
+  var new_user_post_count = 0;
+
   var scriptFilter;
 
   console.log("$#$#$#$#$#$#$START GET SCRIPT$#$#$$#$#$#$#$#$#$#$#$#$#");
@@ -158,13 +161,30 @@ exports.getScript = (req, res, next) => {
           //console.log(feed[0].time)
           if(typeof script_feed[0] === 'undefined') {
               console.log("Script_Feed is empty, push user_posts");
+              if((Date.now() - user_posts[0].absTime) < 30000){
+                //post was made less than 30 seconds ago and should be spliced into the TOP
+                new_user_post = user_posts[0];
+                new_user_post_count = 1;
+                user_posts.splice(0,1);
+              }else{
+                //proceed normally
               finalfeed.push(user_posts[0]);
               user_posts.splice(0,1);
+              }
+
           }
           else if(!(typeof user_posts[0] === 'undefined') && (script_feed[0].time < user_posts[0].relativeTime)){
               console.log("Push user_posts");
+              if((Date.now() - user_posts[0].absTime) < 30000){
+                //post was made less than 30 seconds ago and should be spliced into the TOP
+                new_user_post = user_posts[0];
+                new_user_post_count = 1;
+                user_posts.splice(0,1);
+              }else{
+              //console.log("Relative Time: "+user_posts[0].relativeTime);
               finalfeed.push(user_posts[0]);
               user_posts.splice(0,1);
+              }
           }
           else{
 
@@ -377,6 +397,10 @@ exports.getScript = (req, res, next) => {
         finalfeed.splice(bully_index_two, 0, bully_post_two);
         console.log("@@@@@@@@@@ Pushed second Bully Post to index "+bully_index_two);
       }
+      if( new_user_post){
+        finalfeed.splice(0,0,new_user_post);
+        console.log("@@@@@@@@@@@ Pushed user post to index 0");
+      }
 
       user.save((err) => {
         if (err) {
@@ -487,8 +511,7 @@ exports.newPost = (req, res) => {
     var post = new Object();
     post.body = req.body.body;
     post.absTime = Date.now();
-    //post.relativeTime = post.absTime - user.createdAt;
-    post.relativeTime = -1000;
+    post.relativeTime = post.absTime - user.createdAt;
 
     //if numPost/etc never existed yet, make it here - should never happen in new users
     if (!(user.numPosts) && user.numPosts < -1)
@@ -595,12 +618,12 @@ exports.postUpdateFeedAction = (req, res, next) => {
     //somehow user does not exist here
     if (err) { return next(err); }
 
-    console.log("@@@@@@@@@@@ TOP postID is  ", req.body.postID);
+    //console.log("@@@@@@@@@@@ TOP postID is  ", req.body.postID);
 
     //find the object from the right post in feed
     var feedIndex = _.findIndex(user.feedAction, function(o) { return o.post == req.body.postID; });
 
-    console.log("@@@ USER index is  ", feedIndex);
+    //console.log("@@@ USER index is  ", feedIndex);
 
     if(feedIndex==-1)
     {
@@ -621,7 +644,7 @@ exports.postUpdateFeedAction = (req, res, next) => {
     }
 
     //we found the right post, and feedIndex is the right index for it
-    console.log("##### FOUND post "+req.body.postID+" at index "+ feedIndex);
+    //console.log("##### FOUND post "+req.body.postID+" at index "+ feedIndex);
 
     //create a new Comment
     if(req.body.new_comment)
@@ -862,7 +885,7 @@ exports.postUpdateFeedAction = (req, res, next) => {
       }
       //req.flash('success', { msg: 'Profile information has been updated.' });
       //res.redirect('/account');
-      console.log("@@@@@@@@@@@ SAVED TO DB!!!!!!!!! ");
+      //console.log("@@@@@@@@@@@ SAVED TO DB!!!!!!!!! ");
       res.send({result:"success"});
     });
   });
@@ -905,7 +928,7 @@ exports.postUpdateProFeedAction = (req, res, next) => {
     else
     {
       //we found the right post, and feedIndex is the right index for it
-      console.log("##### FOUND post "+req.body.postID+" at index "+ feedIndex);
+      //console.log("##### FOUND post "+req.body.postID+" at index "+ feedIndex);
 
       //update to new StartTime
       if (req.body.start && (req.body.start > user.profile_feed[feedIndex].startTime))
@@ -1071,7 +1094,7 @@ exports.postUpdateUserPostFeedAction = (req, res, next) => {
     else
     {
       //we found the right post, and feedIndex is the right index for it
-      console.log("##### FOUND post "+req.body.postID+" at index "+ feedIndex);
+      //console.log("##### FOUND post "+req.body.postID+" at index "+ feedIndex);
 
 
         //array of likeTime is empty and we have a new (first) LIKE event
