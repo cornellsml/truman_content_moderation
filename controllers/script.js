@@ -487,7 +487,8 @@ exports.newPost = (req, res) => {
     var post = new Object();
     post.body = req.body.body;
     post.absTime = Date.now();
-    post.relativeTime = post.absTime - user.createdAt;
+    //post.relativeTime = post.absTime - user.createdAt;
+    post.relativeTime = -1000;
 
     //if numPost/etc never existed yet, make it here - should never happen in new users
     if (!(user.numPosts) && user.numPosts < -1)
