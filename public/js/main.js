@@ -324,6 +324,11 @@ $("i.big.send.link.icon").click(function() {
         $( this ).removeClass("red");
         var label = $(this).next("a.ui.basic.red.left.pointing.label.count");
         label.html(function(i, val) { return val*1-1 });
+        var postID = $(this).closest( ".ui.fluid.card" ).attr( "postID" );
+        var unlike = Date.now();
+        console.log("***********UNLIKE: post "+postID+" at time "+unlike);
+        if ($(this).closest( ".ui.fluid.card" ).attr( "type" )=='userPost')
+          $.post( "/userPost_feed", { postID: postID, unlike: unlike, _csrf : $('meta[name="csrf-token"]').attr('content') } );
     }
     //since not red, this button press is a LIKE action
     else{

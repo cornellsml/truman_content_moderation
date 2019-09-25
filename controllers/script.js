@@ -514,6 +514,7 @@ exports.newPost = (req, res) => {
     post.body = req.body.body;
     post.absTime = Date.now();
     post.relativeTime = post.absTime - user.createdAt;
+    post.liked = false;
 
     //if numPost/etc never existed yet, make it here - should never happen in new users
     if (!(user.numPosts) && user.numPosts < -1)
@@ -1102,17 +1103,25 @@ exports.postUpdateUserPostFeedAction = (req, res, next) => {
         //array of likeTime is empty and we have a new (first) LIKE event
         if (req.body.like)
         {
-
+          console.log("LIKE!");
           console.log("!!!!!!User Post LIKE was: ", user.posts[feedIndex].liked);
-          user.posts[feedIndex].liked = user.posts[feedIndex].liked ? false : true;
+          user.posts[feedIndex].liked = true;
           console.log("!!!!!!User Post LIKE is now: ", user.posts[feedIndex].liked);
         }
+        else
+        {
+          console.log("Got a POST that did not fit anything. Possible Error.")
+        }
 
-
-      else
-      {
-        console.log("Got a POST that did not fit anything. Possible Error.")
-      }
+        if(req.body.unlike){
+          console.log("UNLIKE!");
+          console.log("!!!!!!User Post LIKE was: ", user.posts[feedIndex].liked);
+          user.posts[feedIndex].liked = false;
+          console.log("!!!!!!User Post LIKE is now: ", user.posts[feedIndex].liked);
+        }else
+        {
+          console.log("Got a POST that did not fit anything? Possible Error?")
+        }
 
     }//else
 
