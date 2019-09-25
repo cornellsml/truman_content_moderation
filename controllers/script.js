@@ -47,8 +47,7 @@ exports.getScript = (req, res, next) => {
   var bully_post_two;
   var bully_count_two = 0;
 
-  var new_user_post;
-  var new_user_post_count = 0;
+  var new_user_posts = [];
 
   var scriptFilter;
 
@@ -161,10 +160,9 @@ exports.getScript = (req, res, next) => {
           //console.log(feed[0].time)
           if(typeof script_feed[0] === 'undefined') {
               console.log("Script_Feed is empty, push user_posts");
-              if((Date.now() - user_posts[0].absTime) < 30000){
+              if((Date.now() - user_posts[0].absTime) < 300000){ //if posted within the last 5 minutes
                 //post was made less than 30 seconds ago and should be spliced into the TOP
-                new_user_post = user_posts[0];
-                new_user_post_count = 1;
+                new_user_posts.push(user_posts[0]);
                 user_posts.splice(0,1);
               }else{
                 //proceed normally
@@ -175,10 +173,9 @@ exports.getScript = (req, res, next) => {
           }
           else if(!(typeof user_posts[0] === 'undefined') && (script_feed[0].time < user_posts[0].relativeTime)){
               console.log("Push user_posts");
-              if((Date.now() - user_posts[0].absTime) < 30000){
+              if((Date.now() - user_posts[0].absTime) < 300000){ //if posted within the last 5 minutes
                 //post was made less than 30 seconds ago and should be spliced into the TOP
-                new_user_post = user_posts[0];
-                new_user_post_count = 1;
+                new_user_posts.push(user_posts[0]);
                 user_posts.splice(0,1);
               }else{
               //console.log("Relative Time: "+user_posts[0].relativeTime);
@@ -397,8 +394,13 @@ exports.getScript = (req, res, next) => {
         finalfeed.splice(bully_index_two, 0, bully_post_two);
         console.log("@@@@@@@@@@ Pushed second Bully Post to index "+bully_index_two);
       }
-      if( new_user_post){
+      /*if(new_user_post){
         finalfeed.splice(0,0,new_user_post);
+        console.log("@@@@@@@@@@@ Pushed user post to index 0");
+      }*/
+      while(new_user_posts.length){
+        finalfeed.splice(0,0,new_user_posts[0]);
+        new_user_posts.splice(0,1);
         console.log("@@@@@@@@@@@ Pushed user post to index 0");
       }
 
