@@ -329,6 +329,8 @@ $("i.big.send.link.icon").click(function() {
         console.log("***********UNLIKE: post "+postID+" at time "+unlike);
         if ($(this).closest( ".ui.fluid.card" ).attr( "type" )=='userPost')
           $.post( "/userPost_feed", { postID: postID, unlike: unlike, _csrf : $('meta[name="csrf-token"]').attr('content') } );
+        else
+          $.post( "/feed", { postID: postID, unlike: unlike, _csrf : $('meta[name="csrf-token"]').attr('content') } );
     }
     //since not red, this button press is a LIKE action
     else{

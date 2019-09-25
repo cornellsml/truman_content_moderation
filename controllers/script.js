@@ -831,6 +831,16 @@ exports.postUpdateFeedAction = (req, res, next) => {
         }
       }
 
+      //unliking a post
+      else if ((user.feedAction[feedIndex].likeTime)&&req.body.unlike && (req.body.unlike > user.feedAction[feedIndex].startTime))
+      {
+        let unlike = req.body.unlike - user.feedAction[feedIndex].startTime
+        console.log("%%%%%Add new UNLIKE Time: ", unlike);
+        user.feedAction[feedIndex].liked = false;
+        user.numPostLikes--;
+
+      }
+
       //array of replyTime is empty and we have a new (first) REPLY event
       else if ((!user.feedAction[feedIndex].replyTime)&&req.body.reply && (req.body.reply > user.feedAction[feedIndex].startTime))
       {
