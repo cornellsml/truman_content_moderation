@@ -465,6 +465,17 @@ $("i.big.send.link.icon").click(function() {
 
   });
 
+  //this is the POST REPLY button
+  $('.reply.button')
+  .on('click', function () {
+
+    let parent = $(this).closest(".ui.fluid.card");
+    let postID = parent.attr("postID");
+
+    parent.find("input.newcomment").focus();
+
+  });
+
   //User wants to REREAD
   $('.ui.button.reread')
   .on('click', function() {
@@ -510,7 +521,10 @@ $('.ui.fluid.card .img.post')
     var parent = $(this).parents(".ui.fluid.card");
     var postID = parent.attr( "postID" );
     //console.log(postID);
-    $.post( "/feed", { postID: postID, viewed: totalViewTime, _csrf : $('meta[name="csrf-token"]').attr('content') } );
+    //Don't record it if it's longer than 24 hours, do this check because refresh causes all posts to be amrked as "viewed" for 49 years.(???)
+    if(totalViewTime < 86400000){
+      $.post( "/feed", { postID: postID, viewed: totalViewTime, _csrf : $('meta[name="csrf-token"]').attr('content') } );
+    }
     //console.log("Total time: " + totalViewTime);
     //console.log($(this).siblings(".content").children(".description").text());
   },
@@ -535,7 +549,10 @@ $('.ui.fluid.card .img.post')
       var postID = parent.attr( "postID" );
       //console.log("PostID: " + postID);
       //console.log(postID);
-      $.post( "/feed", { postID: postID, viewed: totalViewTime, _csrf : $('meta[name="csrf-token"]').attr('content') } );
+      //Don't record it if it's longer than 24 hours, do this check because refresh causes all posts to be marked as "viewed" for 49 years. (???)
+      if(totalViewTime < 86400000){
+        $.post( "/feed", { postID: postID, viewed: totalViewTime, _csrf : $('meta[name="csrf-token"]').attr('content') } );
+      }
       //console.log("Total time: " + totalViewTime);
       //console.log($(this).siblings(".content").children(".description").text());
     }
