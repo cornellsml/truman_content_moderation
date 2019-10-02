@@ -96,59 +96,59 @@ mongoose.connection.on('error', (err) => {
 var rule = new schedule.RecurrenceRule();
 rule.hour = 4;
 rule.minute = 55;
- 
+
 var j = schedule.scheduleJob(rule, function(){
   console.log('@@@@@@######@@@@@@@@#########@@@@@@@@@@@@########');
   console.log('@@@@@@######@@@@@@@@Sending Mail to All ACTIVE USERS!!!!!');
   console.log('@@@@@@######@@@@@@@@#########@@@@@@@@@@@@########');
   userController.mailAllActiveUsers();
-}); 
+});
 
 
 /****
-**CRON JOBS 
+**CRON JOBS
 **Check if users are still active 12 and 20
 */
 var rule1 = new schedule.RecurrenceRule();
 rule1.hour = 4;
 rule1.minute = 30;
- 
+
 var j = schedule.scheduleJob(rule1, function(){
   console.log('@@@@@@######@@@@@@@@#########@@@@@@@@@@@@########');
   console.log('@@@@@@######@@@@@@@@Checking if Users are active!!!!!');
   console.log('@@@@@@######@@@@@@@@#########@@@@@@@@@@@@########');
   userController.stillActive();
-}); 
+});
 
 /****
-**CRON JOBS 
+**CRON JOBS
 **Check if users are still active 12 and 20
 */
 var rule2 = new schedule.RecurrenceRule();
 rule2.hour = 12;
 rule2.minute = 30;
- 
+
 var j2 = schedule.scheduleJob(rule2, function(){
   console.log('@@@@@@######@@@@@@@@#########@@@@@@@@@@@@########');
   console.log('@@@@@@######@@@@@@@@2222 Checking if Users are active 2222!!!!!');
   console.log('@@@@@@######@@@@@@@@#########@@@@@@@@@@@@########');
   userController.stillActive();
-}); 
+});
 
 /****
-**CRON JOBS 
+**CRON JOBS
 **Check if users are still active 12 and 20
 */
 var rule3 = new schedule.RecurrenceRule();
 rule3.hour = 20;
 rule3.minute = 30;
- 
+
 var j3 = schedule.scheduleJob(rule3, function(){
   console.log('@@@@@@######@@@@@@@@#########@@@@@@@@@@@@########');
   console.log('@@@@@@######@@@@@@@@3333 Checking if Users are active 3333!!!!!');
   console.log('@@@@@@######@@@@@@@@#########@@@@@@@@@@@@########');
   userController.stillActive();
-}); 
+});
 
 
 /**
@@ -266,6 +266,13 @@ app.get('/com', function (req, res) {
     title: 'Community Rules'
   });
 });
+
+app.get('/policy', function (req, res) {
+  res.render('policy', {
+    title: 'Our Policy'
+  });
+});
+
 
 app.get('/info', passportConfig.isAuthenticated, function (req, res) {
   res.render('info', {

@@ -418,9 +418,10 @@ $("i.big.send.link.icon").click(function() {
    var commentID = comment.attr("commentID");
    var clickedYes = Date.now();
    console.log("#########COMMENT FLAG:  PostID: "+postID+", Comment ID: "+commentID+"  TYPE is "+typeID+" at time "+clickedYes);
-   $(this).siblings(".header").text("Your response has been recorded.");
+   $(this).siblings(".header").text("Your response has been recorded. Would you like to learn more about our moderation policies?");
    $(this).hide();
    $(this).siblings(".disagree").hide();
+   $(this).siblings(".modInfo").show();
    $.post( "/feed", { postID: postID, commentID: commentID, clickedYes: clickedYes, _csrf : $('meta[name="csrf-token"]').attr('content') } );
 
  });
@@ -433,14 +434,33 @@ $("i.big.send.link.icon").click(function() {
     var typeID = $(this).closest( ".ui.fluid.card" ).attr( "type" );
     var commentID = comment.attr("commentID");
     var clickedNo = Date.now();
-    $(this).siblings(".header").text("Your response has been recorded.");
+    $(this).siblings(".header").text("Your response has been recorded. Would you like to learn more about our moderation policies?");
     $(this).hide();
     $(this).siblings(".agree").hide();
+    $(this).siblings(".modInfo").show();
     console.log("#########COMMENT FLAG:  PostID: "+postID+", Comment ID: "+commentID+"  TYPE is "+typeID+" at time "+clickedNo);
 
     $.post( "/feed", { postID: postID, commentID: commentID, clickedNo: clickedNo, _csrf : $('meta[name="csrf-token"]').attr('content') } );
 
   });
+
+  //this is the "view policy" button after responding to the content moderation question
+   $('.modInfo')
+   .on('click', function() {
+     var comment = $(this).siblings( ".comment" );
+     var postID = $(this).closest( ".ui.fluid.card" ).attr( "postID" );
+     var typeID = $(this).closest( ".ui.fluid.card" ).attr( "type" );
+     var commentID = comment.attr("commentID");
+     var clickedViewPolicy = Date.now();
+     $(this).siblings(".header").text("Your response has been recorded. Would you like to learn more about our moderation policies?");
+     $(this).siblings(".disagree").hide();
+     $(this).siblings(".agree").hide();
+     console.log("#########COMMENT FLAG:  PostID: "+postID+", Comment ID: "+commentID+"  TYPE is "+typeID+" at time "+clickedViewPolicy);
+
+     $.post( "/feed", { postID: postID, commentID: commentID, clickedViewPolicy: clickedViewPolicy, _csrf : $('meta[name="csrf-token"]').attr('content') } );
+     window.location.href='/policy';
+
+   });
 
   //this is the POST FLAG button
   $('.flag.button')

@@ -749,8 +749,18 @@ exports.postUpdateFeedAction = (req, res, next) => {
         user.feedAction[feedIndex].comments[commentIndex].moderationResponse = 'yes';
         if(clickedYes <= 86400000){
           user.day1Response = 'yes';
+          if (user.day1ResponseTime) {
+            user.day1ResponseTime.push(clickedYes);
+          } else {
+            user.day1ResponseTime = [clickedYes];
+          }
         } else if (clickedYes > 86400000) {
           user.day2Response = 'yes';
+          if (user.day2ResponseTime) {
+            user.day2ResponseTime.push(clickedYes);
+          } else {
+            user.day2ResponseTime = [clickedYes];
+          }
         }
 
       }
@@ -773,8 +783,42 @@ exports.postUpdateFeedAction = (req, res, next) => {
         user.feedAction[feedIndex].comments[commentIndex].moderationResponse = 'no';
         if(clickedNo <= 86400000){
           user.day1Response = 'no';
+          if (user.day1ResponseTime) {
+            user.day1ResponseTime.push(clickedNo);
+          } else {
+            user.day1ResponseTime = [clickedNo];
+          }
         } else if (clickedNo > 86400000) {
           user.day2Response = 'no';
+          if (user.day2ResponseTime) {
+            user.day2ResponseTime.push(clickedNo);
+          } else {
+            user.day2ResponseTime = [clickedNo];
+          }
+        }
+
+      }
+
+      //CLICK VIEW POLICY AFTER RESPONDING TO THE CONTENT MODERATION QUESTION
+      else if(req.body.clickedViewPolicy)
+      {
+        let clickedViewPolicy = req.body.clickedViewPolicy - user.createdAt;
+        console.log("!!!!!!New clickedViewPolicy Time: ", clickedViewPolicy);
+
+        if(clickedViewPolicy <= 86400000){
+          user.day1ViewPolicy = true;
+          if (user.day1ViewPolicyTime) {
+            user.day1ViewPolicyTime.push(clickedViewPolicy);
+          } else {
+            user.day1ViewPolicyTime = [clickedViewPolicy];
+          }
+        } else if (clickedViewPolicy > 86400000) {
+          user.day2ViewPolicy = true;
+          if (user.day2ViewPolicyTime) {
+            user.day2ViewPolicyTime.push(clickedViewPolicy);
+          } else {
+            user.day2ViewPolicyTime = [clickedViewPolicy];
+          }
         }
 
       }

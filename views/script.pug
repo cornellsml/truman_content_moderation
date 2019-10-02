@@ -262,14 +262,17 @@ block content
                               .ui.header This comment has been flagged as harassment. Do you agree? 
                               a.ui.agree.button Yes
                               a.ui.disagree.button No 
+                              a.ui.modInfo.button(style="display:none;") Yes
                             if(user.flag_group === "ai")
                               .ui.header Our automated system has flagged this comment as harassment. Do you agree? 
                               a.ui.agree.button Yes
                               a.ui.disagree.button No 
+                              a.ui.modInfo.button(style="display:none;") Yes
                             if(user.flag_group === "user")
                               .ui.header Other users have flagged this comment as harassment. Do you agree? 
                               a.ui.agree.button Yes
                               a.ui.disagree.button No 
+                              a.ui.modInfo.button(style="display:none;") Yes
                         else 
                           .comment(commentID=comment.id)
                             a.avatar(href='/user/'+comment.actor.username)
@@ -339,7 +342,7 @@ block content
     .ui.fluid.card
       .content
         .description
-        |  End of Posts for the last 48 hours.
+        |  End of Posts for the last 24 hours.
     br
     br
     br
