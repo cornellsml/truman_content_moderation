@@ -39,7 +39,8 @@ Array.prototype.sum = function() {
 
 var mlm_array = [];
 
-dotenv.load({ path: '.env' });
+//dotenv.load({ path: '.env' });
+dotenv.config({path: '.env'});
 
 /*
 var MongoClient = require('mongodb').MongoClient
@@ -62,10 +63,10 @@ mongoose.Promise = global.Promise;
 
 //mongoose.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI);
 //mongoose.connect(process.env.MONGOLAB_TEST || process.env.PRO_MONGOLAB_URI, { useMongoClient: true });
-mongoose.connect(process.env.MONGOLAB_TEST || process.env.PRO_MONGOLAB_URI, { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI, { useNewUrlParser: true });
 mongoose.connection.on('error', (err) => {
-  console.error(err);
   console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
+  console.error(err);
   process.exit();
 });
 
