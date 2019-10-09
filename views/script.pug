@@ -263,16 +263,19 @@ block content
                               a.ui.agree.button Yes
                               a.ui.disagree.button No 
                               a.ui.modInfo.button(style="display:none;") Yes
+                              a.ui.noModInfo.button(style="display:none;") No
                             if(user.flag_group === "ai")
                               .ui.header Our automated system has flagged this comment as harassment. Do you agree? 
                               a.ui.agree.button Yes
                               a.ui.disagree.button No 
                               a.ui.modInfo.button(style="display:none;") Yes
+                              a.ui.noModInfo.button(style="display:none;") No
                             if(user.flag_group === "user")
                               .ui.header Other users have flagged this comment as harassment. Do you agree? 
                               a.ui.agree.button Yes
                               a.ui.disagree.button No 
                               a.ui.modInfo.button(style="display:none;") Yes
+                              a.ui.noModInfo.button(style="display:none;") No
                         else 
                           .comment(commentID=comment.id)
                             a.avatar(href='/user/'+comment.actor.username)

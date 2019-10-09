@@ -422,6 +422,7 @@ $("i.big.send.link.icon").click(function() {
    $(this).hide();
    $(this).siblings(".disagree").hide();
    $(this).siblings(".modInfo").show();
+   $(this).siblings(".noModInfo").show();
    $.post( "/feed", { postID: postID, commentID: commentID, clickedYes: clickedYes, _csrf : $('meta[name="csrf-token"]').attr('content') } );
 
  });
@@ -438,6 +439,7 @@ $("i.big.send.link.icon").click(function() {
     $(this).hide();
     $(this).siblings(".agree").hide();
     $(this).siblings(".modInfo").show();
+    $(this).siblings(".noModInfo").show();
     console.log("#########COMMENT FLAG:  PostID: "+postID+", Comment ID: "+commentID+"  TYPE is "+typeID+" at time "+clickedNo);
 
     $.post( "/feed", { postID: postID, commentID: commentID, clickedNo: clickedNo, _csrf : $('meta[name="csrf-token"]').attr('content') } );
@@ -452,15 +454,41 @@ $("i.big.send.link.icon").click(function() {
      var typeID = $(this).closest( ".ui.fluid.card" ).attr( "type" );
      var commentID = comment.attr("commentID");
      var clickedViewPolicy = Date.now();
-     $(this).siblings(".header").text("Your response has been recorded. Would you like to learn more about our moderation policies?");
      $(this).siblings(".disagree").hide();
      $(this).siblings(".agree").hide();
+     $(this).siblings(".modInfo").hide();
+     $(this).siblings(".noModInfo").hide();
      console.log("#########COMMENT FLAG:  PostID: "+postID+", Comment ID: "+commentID+"  TYPE is "+typeID+" at time "+clickedViewPolicy);
 
      $.post( "/feed", { postID: postID, commentID: commentID, clickedViewPolicy: clickedViewPolicy, _csrf : $('meta[name="csrf-token"]').attr('content') } );
      window.location.href='/policy';
 
    });
+
+ //this is the "no, don't view policy" button after responding to the content moderation question
+  $('.noModInfo')
+  .on('click', function() {
+    var comment = $(this).siblings( ".comment" );
+    var postID = $(this).closest( ".ui.fluid.card" ).attr( "postID" );
+    var typeID = $(this).closest( ".ui.fluid.card" ).attr( "type" );
+    var commentID = comment.attr("commentID");
+    var clickedNoViewPolicy = Date.now();
+    $(this).siblings(".header").text("Thank you! Your response has been recorded.");
+    $(this).siblings(".disagree").hide();
+    $(this).siblings(".agree").hide();
+    $(this).hide();
+    $(this).siblings(".modInfo").hide();
+    console.log("#########COMMENT FLAG:  PostID: "+postID+", Comment ID: "+commentID+"  TYPE is "+typeID+" at time "+clickedNoViewPolicy);
+
+    $.post( "/feed", { postID: postID, commentID: commentID, clickedNoViewPolicy: clickedNoViewPolicy, _csrf : $('meta[name="csrf-token"]').attr('content') } );
+  });
+
+  //this is to track if a user clicked to view the policy from the dropdown menu
+  $("#viewPolicyDropdown")
+  .on('click', function(){
+    var viewPolicyDropdownTime = Date.now();
+    $.post( "/view_policy", { viewPolicyDropdownTime: viewPolicyDropdownTime, _csrf : $('meta[name="csrf-token"]').attr('content') } );
+  })
 
   //this is the POST FLAG button
   $('.flag.button')

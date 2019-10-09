@@ -31,14 +31,18 @@ const userSchema = new mongoose.Schema({
   moderation_group: String, //Full group type for the content moderation study
   flag_group: String, //Flag type (ai, user, none)
   bully_group: String, //Type of bullying group (ambig, unambig)
-  day1Response: {type: String, default: 'none'}, //this is the same as moderationResponse in feedAction, just for simple access in script.pug
-  day1ResponseTime: [Number],
-  day1ViewPolicy: {type: Boolean, default: false},
-  day1ViewPolicyTime: [Number],
-  day2Response: {type: String, default: 'none'},
-  day2ResponseTime: [Number],
-  day2ViewPolicy: {type: Boolean, default: false},
-  day2ViewPolicyTime: [Number],
+  day1Response: {type: String, default: 'none'}, //Whether or not the user said yes/no to the moderation question
+  day1ResponseTime: { type: Number, default: 0 }, //time that the user responded to the moderation question
+  day1ViewPolicyResponse: {type: String, default: 'none'}, //Whether the user said yes or no to the moderation follow up question (do you want to see our policy?) (yes, no, none)
+  day1ViewPolicyResponseTime: { type: Number, default: 0 }, //only records when the user responded yes/no to view policy question
+  day1ViewPolicyTimes: [Number], //When the user viewed the policy (can be multiple times from multiple sources)
+  day1ViewPolicySources: [String], //How the user accessed the policy (dropdown or from the yes/no followup question) (menu, comment)
+  day2Response: {type: String, default: 'none'}, //Whether or not the user said yes/no to the moderation question
+  day2ResponseTime: { type: Number, default: 0 }, //time that the user responded to the moderation question
+  day2ViewPolicyResponse: {type: String, default: 'none'}, //Whether the user said yes or no to the moderation follow up question (do you want to see our policy?) (yes, no, none)
+  day2ViewPolicyResponseTime: { type: Number, default: 0 }, //only records when the user responded yes/no to view policy question
+  day2ViewPolicyTimes: [Number], //When the user viewed the policy (can be multiple times from multiple sources)
+  day2ViewPolicySources: [String], //How the user accessed the policy (dropdown or from the yes/no followup question) (menu, comment)
   ui: String,    //just UI type (no or ui)
   notify: String, //notification type (no, low or high)
   script_type: String, //type of script they are running in

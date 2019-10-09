@@ -749,18 +749,10 @@ exports.postUpdateFeedAction = (req, res, next) => {
         user.feedAction[feedIndex].comments[commentIndex].moderationResponse = 'yes';
         if(clickedYes <= 86400000){
           user.day1Response = 'yes';
-          if (user.day1ResponseTime) {
-            user.day1ResponseTime.push(clickedYes);
-          } else {
-            user.day1ResponseTime = [clickedYes];
-          }
+          user.day1ResponseTime = clickedYes;
         } else if (clickedYes > 86400000) {
           user.day2Response = 'yes';
-          if (user.day2ResponseTime) {
-            user.day2ResponseTime.push(clickedYes);
-          } else {
-            user.day2ResponseTime = [clickedYes];
-          }
+          user.day2ResponesTime = clickedYes;
         }
 
       }
@@ -783,18 +775,10 @@ exports.postUpdateFeedAction = (req, res, next) => {
         user.feedAction[feedIndex].comments[commentIndex].moderationResponse = 'no';
         if(clickedNo <= 86400000){
           user.day1Response = 'no';
-          if (user.day1ResponseTime) {
-            user.day1ResponseTime.push(clickedNo);
-          } else {
-            user.day1ResponseTime = [clickedNo];
-          }
+          user.day1ResponseTime = clickedNo;
         } else if (clickedNo > 86400000) {
           user.day2Response = 'no';
-          if (user.day2ResponseTime) {
-            user.day2ResponseTime.push(clickedNo);
-          } else {
-            user.day2ResponseTime = [clickedNo];
-          }
+          user.day2ResponseTime = clickedNo;
         }
 
       }
@@ -806,23 +790,75 @@ exports.postUpdateFeedAction = (req, res, next) => {
         console.log("!!!!!!New clickedViewPolicy Time: ", clickedViewPolicy);
 
         if(clickedViewPolicy <= 86400000){
-          user.day1ViewPolicy = true;
-          if (user.day1ViewPolicyTime) {
-            user.day1ViewPolicyTime.push(clickedViewPolicy);
+
+          user.day1ViewPolicyResponse = "yes";
+          user.day1ViewPolicyResponseTime = clickedViewPolicy;
+
+          if (user.day1ViewPolicyTimes) {
+            user.day1ViewPolicyTimes.push(clickedViewPolicy);
           } else {
-            user.day1ViewPolicyTime = [clickedViewPolicy];
+            user.day1ViewPolicyTimes = [clickedViewPolicy];
           }
-        } else if (clickedViewPolicy > 86400000) {
-          user.day2ViewPolicy = true;
-          if (user.day2ViewPolicyTime) {
-            user.day2ViewPolicyTime.push(clickedViewPolicy);
+          if (user.day1ViewPolicySources) {
+            user.day1ViewPolicySources.push("comment");
           } else {
-            user.day2ViewPolicyTime = [clickedViewPolicy];
+            user.day1ViewPolicySources = ["comment"];
+          }
+
+        } else if (clickedViewPolicy > 86400000) {
+
+          user.day2ViewPolicyResponse = "yes";
+          user.day2ViewPolicyResponseTime = clickedViewPolicy;
+
+          if (user.day2ViewPolicyTimes) {
+            user.day2ViewPolicyTimes.push(clickedViewPolicy);
+          } else {
+            user.day2ViewPolicyTimes = [clickedViewPolicy];
+          }
+          if (user.day2ViewPolicySources) {
+            user.day2ViewPolicySources.push("comment");
+          } else {
+            user.day2ViewPolicySources = ["comment"];
           }
         }
 
       }
 
+      //CLICK NO, DON'T VIEW POLICY AFTER RESPONDING TO THE CONTENT MODERATION QUESTION
+      else if(req.body.clickedNoViewPolicy)
+      {
+        let clickedNoViewPolicy = req.body.clickedNoViewPolicy - user.createdAt;
+        console.log("!!!!!!New clickedNoViewPolicy Time: ", clickedNoViewPolicy);
+
+        if(clickedNoViewPolicy <= 86400000){
+
+          user.day1ViewPolicyResponse = "no";
+          user.day1ViewPolicyResponseTime = clickedNoViewPolicy;
+
+          if (user.day1ViewPolicyTimes) {
+            user.day1ViewPolicyTimes.push(clickedNoViewPolicy);
+          } else {
+            user.day1ViewPolicyTimes = [clickedNoViewPolicy];
+          }
+          if (user.day1ViewPolicySources) {
+            user.day1ViewPolicySources.push("comment");
+          } else {
+            user.day1ViewPolicySources = ["comment"];
+          }
+
+        } else if (clickedNoViewPolicy > 86400000) {
+
+          user.day2ViewPolicyResponse = "no";
+          user.day2ViewPolicyResponseTime = clickedNoViewPolicy;
+
+          if (user.day2ViewPolicyTimes) {
+            user.day2ViewPolicyTimes.push(clickedNoViewPolicy);
+          } else {
+            user.day2ViewPolicyTimes = [clickedNoViewPolicy];
+          }
+
+        }
+      }
     }//end of all comment junk
 
     //not a comment - its a post action
