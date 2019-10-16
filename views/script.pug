@@ -259,23 +259,66 @@ block content
                                   a.flag.comment Flag
                             //-Customizing the message based on the flag_group the current user is in 
                             if(user.flag_group === "none")
-                              .ui.header This comment has been flagged as harassment. Do you agree? 
-                              a.ui.agree.button Yes
-                              a.ui.disagree.button No 
-                              a.ui.modInfo.button(style="display:none;") Yes
-                              a.ui.noModInfo.button(style="display:none;") No
+                              .ui.icon.message.ignore
+                                i.flag.icon.float
+                                .content
+                                  .ui.header(style="color:black;") This comment has been flagged as harassment. Do you agree? 
+                                  a.ui.agree.button Yes
+                                  a.ui.disagree.button No 
                             if(user.flag_group === "ai")
-                              .ui.header Our automated system has flagged this comment as harassment. Do you agree? 
-                              a.ui.agree.button Yes
-                              a.ui.disagree.button No 
-                              a.ui.modInfo.button(style="display:none;") Yes
-                              a.ui.noModInfo.button(style="display:none;") No
-                            if(user.flag_group === "user")
-                              .ui.header Other users have flagged this comment as harassment. Do you agree? 
-                              a.ui.agree.button Yes
-                              a.ui.disagree.button No 
-                              a.ui.modInfo.button(style="display:none;") Yes
-                              a.ui.noModInfo.button(style="display:none;") No
+                              .ui.icon.message.ignore
+                                i.laptop.icon.float
+                                .content
+                                  .ui.header(style="color:black;") Our automated system has flagged this comment as harassment. Do you agree? 
+                                  a.ui.agree.button Yes
+                                  a.ui.disagree.button No 
+                            if(user.flag_group === "user")  
+                              .ui.icon.message.ignore
+                                i.users.icon.float
+                                .content
+                                  .ui.header(style="color:black;") Other users have flagged this comment as harassment. Do you agree? 
+                                  a.ui.agree.button Yes
+                                  a.ui.disagree.button No 
+                                  
+                          .comment.modRespondedNo(commentID=comment.id style="display:none;")
+                            a.avatar(href='/user/'+comment.actor.username)
+                              //-img(src=cdn+'/profile_pictures/'+comment.actor.profile.picture)                       
+                              img(src=cdn+"/profile_pictures/"+comment.actor.profile.picture)
+                            .content
+                              a.author(href='/user/'+comment.actor.username)=comment.actor.profile.name
+                              .metadata
+                                span.date=(user.createdAt.getTime() + comment.time)
+                                .rating
+                                  if comment.liked
+                                    i.red.heart.icon
+                                    span= 0
+                                    |  Likes 
+                                  else
+                                    i.heart.icon
+                                    span.num= 0
+                                    |  Likes
+                              .text=comment.body
+                              .actions
+                                if comment.liked
+                                  a.red.like.comment Like
+                                else
+                                  a.like.comment Like
+                                a.flag.comment Flag
+                                //-Customizing the message based on the flag_group the current user is in 
+                            .ui.success.icon.message
+                              i.balance.scale.icon.float
+                              .content
+                                h3.header Your response has been recorded. Do you want to view the moderation policy?
+                                a.ui.modInfo.button Yes
+                                a.ui.noModInfo.button No
+                                
+                          .comment.modRespondedYes(commentID=comment.id style="display:none;")
+                            .ui.success.icon.message
+                              i.balance.scale.icon.float
+                              .content
+                                h3.header Your response has been recorded. Do you want to view the moderation policy?
+                                a.ui.modInfo.button Yes
+                                a.ui.noModInfo.button No
                         else 
                           .comment(commentID=comment.id)
                             a.avatar(href='/user/'+comment.actor.username)

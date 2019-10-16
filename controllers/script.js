@@ -752,7 +752,7 @@ exports.postUpdateFeedAction = (req, res, next) => {
           user.day1ResponseTime = clickedYes;
         } else if (clickedYes > 86400000) {
           user.day2Response = 'yes';
-          user.day2ResponesTime = clickedYes;
+          user.day2ResponseTime = clickedYes;
         }
 
       }
@@ -835,27 +835,10 @@ exports.postUpdateFeedAction = (req, res, next) => {
           user.day1ViewPolicyResponse = "no";
           user.day1ViewPolicyResponseTime = clickedNoViewPolicy;
 
-          if (user.day1ViewPolicyTimes) {
-            user.day1ViewPolicyTimes.push(clickedNoViewPolicy);
-          } else {
-            user.day1ViewPolicyTimes = [clickedNoViewPolicy];
-          }
-          if (user.day1ViewPolicySources) {
-            user.day1ViewPolicySources.push("comment");
-          } else {
-            user.day1ViewPolicySources = ["comment"];
-          }
-
         } else if (clickedNoViewPolicy > 86400000) {
 
           user.day2ViewPolicyResponse = "no";
           user.day2ViewPolicyResponseTime = clickedNoViewPolicy;
-
-          if (user.day2ViewPolicyTimes) {
-            user.day2ViewPolicyTimes.push(clickedNoViewPolicy);
-          } else {
-            user.day2ViewPolicyTimes = [clickedNoViewPolicy];
-          }
 
         }
       }
