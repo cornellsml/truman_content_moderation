@@ -199,21 +199,21 @@ Place Experimental Varibles Here!
 
   if (flag_group === "ai"){
     if(bully_group === "ambig"){
-      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd";
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8CdA8rLS8pjZIoJ/";
     } else if (bully_group === "unambig")  {
-      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd";
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_bfunNCozGRvAPAx/";
     }
   } else if (flag_group === "none"){
     if(bully_group === "ambig"){
-      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd";
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_eLnoqxwlgljCP0F";
     } else if (bully_group === "unambig") {
-      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd";
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_5zGxmvHrkSi8GeF/";
     }
   } else if (flag_group === "user"){
     if(bully_group === "ambig"){
-      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd";
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_6fnhf9iimESaHvn/";
     } else if (bully_group === "unambig"){
-      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8nRB8WMWbRiQRmd";
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_ePsMGWV5FdHbc8Z/";
     }
   }
 
