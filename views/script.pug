@@ -1,7 +1,7 @@
 extends ui_layout_no
   
 block content
-
+  
   //-Change this URI to a CDN you are using for Photos
   -var cdn = "";
   -var currentDay = "";
@@ -244,11 +244,11 @@ block content
                                   .rating
                                     if comment.liked
                                       i.red.heart.icon
-                                      span= 0
+                                      span=comment.likes
                                       |  Likes 
                                     else
                                       i.heart.icon
-                                      span.num= 0
+                                      span.num=comment.likes
                                       |  Likes
                                 .text=comment.body
                                 .actions
@@ -291,11 +291,11 @@ block content
                                 .rating
                                   if comment.liked
                                     i.red.heart.icon
-                                    span= 0
+                                    span=comment.likes
                                     |  Likes 
                                   else
                                     i.heart.icon
-                                    span.num= 0
+                                    span.num=comment.likes
                                     |  Likes
                               .text=comment.body
                               .actions
@@ -443,6 +443,10 @@ block content
       .actions
         input.ui.green.button(type='submit', name="foo", value='Submit', form='postform')
           
-
+block scripts
+  script().
+    if(window.performance.getEntriesByType("navigation")[0].type === "back_forward"){
+      window.location.reload(true);
+    }
     
     

@@ -362,7 +362,11 @@ async function doPopulate() {
                             comment_detail.commentID = new_replies.id;
                             comment_detail.class = new_replies.class;
                             comment_detail.module = new_replies.module;
-                            comment_detail.likes = getLikesComment();
+                            if((new_replies.class === "unambig_flag") || (new_replies.class === "ambig_flag") || (new_replies.class === "unambig_none")){
+                              comment_detail.likes = 0;
+                            } else {
+                              comment_detail.likes = getLikesComment();
+                            }
                             comment_detail.time = timeStringToNum(new_replies.time);
                             comment_detail.actor = act;
                             pr.comments.push(comment_detail);

@@ -122,7 +122,7 @@ exports.postLogin = (req, res, next) => {
     if (!(user.active)) {
       console.log("FINAL");
       //Need to capture this in a var
-      var post_url = user.endSurveyLink+user.mturkID;
+      var post_url = user.endSurveyLink;
       console.log("last url is "+post_url)
       req.flash('final', { msg: post_url });
       return res.redirect('/login');
@@ -199,21 +199,21 @@ Place Experimental Varibles Here!
 
   if (flag_group === "ai"){
     if(bully_group === "ambig"){
-      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8CdA8rLS8pjZIoJ/";
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_8CdA8rLS8pjZIoJ";
     } else if (bully_group === "unambig")  {
-      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_bfunNCozGRvAPAx/";
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_bfunNCozGRvAPAx";
     }
   } else if (flag_group === "none"){
     if(bully_group === "ambig"){
       surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_eLnoqxwlgljCP0F";
     } else if (bully_group === "unambig") {
-      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_5zGxmvHrkSi8GeF/";
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_5zGxmvHrkSi8GeF";
     }
   } else if (flag_group === "user"){
     if(bully_group === "ambig"){
-      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_6fnhf9iimESaHvn/";
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_6fnhf9iimESaHvn";
     } else if (bully_group === "unambig"){
-      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_ePsMGWV5FdHbc8Z/";
+      surveyLink = "https://cornell.qualtrics.com/jfe/form/SV_ePsMGWV5FdHbc8Z";
     }
   }
 
@@ -649,7 +649,7 @@ var sendFinalEmail = function(user){
       text: `Hey ${u_name},\n\n
       Thank you so much for participating in our study!\n
       Your participation has been a huge help in beta testing our app.
-      You have one last task to finish the study, and that is to take the final survey here at  `+user.endSurveyLink+user.mturkID+`\n\n
+      You have one last task to finish the study, and that is to take the final survey here at  `+user.endSurveyLink+`\n\n
       Thanks again for all your help and participation!\n
       Keep Eating, Snapping and Loving!\n
       🍴📷.❤️ Team
