@@ -365,6 +365,16 @@ $("i.big.send.link.icon").click(function() {
 
         var label = comment.find( "span.num" );
         label.html(function(i, val) { return val*1-1 });
+
+        var postID = $(this).closest( ".ui.fluid.card" ).attr( "postID" );
+        var commentID = comment.attr("commentID");
+        var unlike = Date.now();
+
+        if ($(this).closest( ".ui.fluid.card" ).attr( "type" )=='userPost'){
+          //$.post( "/userPost_feed", { postID: postID, commentID: commentID, like: like, _csrf : $('meta[name="csrf-token"]').attr('content') } );
+        } else {
+          $.post( "/feed", { postID: postID, commentID: commentID, unlike: unlike, _csrf : $('meta[name="csrf-token"]').attr('content') } );
+        }
     }
     //since not red, this button press is a LIKE action
     else{

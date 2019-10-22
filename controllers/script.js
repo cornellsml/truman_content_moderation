@@ -695,7 +695,8 @@ exports.postUpdateFeedAction = (req, res, next) => {
       if(req.body.like)
       {
         console.log("Comment ID is  ", commentIndex);
-        let like = req.body.like - user.feedAction[feedIndex].startTime
+        //let like = req.body.like - user.feedAction[feedIndex].startTime
+        let like = req.body.like - user.createdAt;
         console.log("!!!!!!New FIRST COMMENT LIKE Time: ", like);
         if (user.feedAction[feedIndex].comments[commentIndex].likeTime)
         {
@@ -709,6 +710,28 @@ exports.postUpdateFeedAction = (req, res, next) => {
         }
         user.feedAction[feedIndex].comments[commentIndex].liked = true;
         user.numCommentLikes++
+
+      }
+
+      //UNLIKE A COMMENT
+      if(req.body.unlike)
+      {
+        console.log("Comment ID is  ", commentIndex);
+        //let unlike = req.body.unlike - user.feedAction[feedIndex].startTime
+        let unlike = req.body.unlike - user.createdAt;
+        console.log("!!!!!!New FIRST COMMENT UNLIKE Time: ", unlike);
+        if (user.feedAction[feedIndex].comments[commentIndex].unlikeTime)
+        {
+          user.feedAction[feedIndex].comments[commentIndex].unlikeTime.push(unlike);
+
+        }
+        else
+        {
+          user.feedAction[feedIndex].comments[commentIndex].unlikeTime = [unlike];
+          console.log("!!!!!!!adding FIRST COMMENT UNLIKE time [0] now which is  ", user.feedAction[feedIndex].unlikeTime[0]);
+        }
+        user.feedAction[feedIndex].comments[commentIndex].liked = false;
+        user.numCommentLikes--;
 
       }
 

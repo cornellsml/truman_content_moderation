@@ -100,7 +100,7 @@ block content
                               .rating
                                 if comment.liked
                                   i.red.heart.icon
-                                  span=comment.likes
+                                  span.num=comment.likes
                                   | Likes 
                                 else
                                   i.heart.icon
@@ -126,7 +126,7 @@ block content
                               .rating
                                 if comment.liked
                                   i.red.heart.icon
-                                  span=comment.likes
+                                  span.num=comment.likes
                                   | Likes 
                                 else
                                   i.heart.icon
@@ -194,7 +194,7 @@ block content
                 .ui.red.like.button
                   i.heart.icon
                   |  Like
-                a.ui.basic.red.left.pointing.label=val.likes
+                a.ui.basic.red.left.pointing.label.count=val.likes
             else
               .ui.labeled.button(tabindex='0')
                 .ui.like.button
@@ -244,7 +244,7 @@ block content
                                   .rating
                                     if comment.liked
                                       i.red.heart.icon
-                                      span=comment.likes
+                                      span.num=comment.likes
                                       |  Likes 
                                     else
                                       i.heart.icon
@@ -291,7 +291,7 @@ block content
                                 .rating
                                   if comment.liked
                                     i.red.heart.icon
-                                    span=comment.likes
+                                    span.num=comment.likes
                                     |  Likes 
                                   else
                                     i.heart.icon
@@ -331,7 +331,7 @@ block content
                                 .rating
                                   if comment.liked
                                     i.red.heart.icon
-                                    span=comment.likes
+                                    span.num=comment.likes
                                     |  Likes 
                                   else
                                     i.heart.icon
@@ -361,7 +361,7 @@ block content
                               .rating
                                 if comment.liked
                                   i.red.heart.icon
-                                  span=comment.likes
+                                  span.num=comment.likes
                                   |  Likes 
                                 else
                                   i.heart.icon

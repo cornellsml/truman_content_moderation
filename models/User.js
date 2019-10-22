@@ -160,7 +160,7 @@ const userSchema = new mongoose.Schema({
           moderationResponseTime: [Number], //array of moderation response times
           flagTime  : [Number], //array of flag times
           likeTime  : [Number], //array of like times
-
+          unlikeTime  : [Number], //array of unlike times
           new_comment: {type: Boolean, default: false}, //is new comment
           new_comment_id: Number,//ID for comment
           comment_body: String, //Original Body of User Post
