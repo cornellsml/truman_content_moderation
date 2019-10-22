@@ -149,6 +149,7 @@ const userSchema = new mongoose.Schema({
         readTime : [Number],
         flagTime  : [Number],
         likeTime  : [Number],
+        unlikeTime  : [Number],
         replyTime  : [Number],
         viewedTime : [Number], //how long the user spent looking at the post (does not record times less than 1.5 seconds)
 

@@ -902,7 +902,8 @@ exports.postUpdateFeedAction = (req, res, next) => {
       //Already have a likeTime Array, New LIKE event, need to add this to likeTime array
       else if ((user.feedAction[feedIndex].likeTime)&&req.body.like && (req.body.like > user.feedAction[feedIndex].startTime))
       {
-        let like = req.body.like - user.feedAction[feedIndex].startTime
+        //let like = req.body.like - user.feedAction[feedIndex].startTime
+        let like = req.body.like - user.createdAt
         console.log("%%%%%Add new LIKE Time: ", like);
         user.feedAction[feedIndex].likeTime.push(like);
         if(user.feedAction[feedIndex].liked)
@@ -920,8 +921,10 @@ exports.postUpdateFeedAction = (req, res, next) => {
       //unliking a post
       else if ((user.feedAction[feedIndex].likeTime)&&req.body.unlike && (req.body.unlike > user.feedAction[feedIndex].startTime))
       {
-        let unlike = req.body.unlike - user.feedAction[feedIndex].startTime
+        //let unlike = req.body.unlike - user.feedAction[feedIndex].startTime
+        let unlike = req.body.unlike - user.createdAt
         console.log("%%%%%Add new UNLIKE Time: ", unlike);
+        user.feedAction[feedIndex].unlikeTime.push(unlike);
         if(user.feedAction[feedIndex].liked)
         {
           user.feedAction[feedIndex].liked = false;
