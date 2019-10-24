@@ -24,12 +24,24 @@ var summary_writer = csvWriter();
 //5bb3a93ad9fd14471bf39791
 //5bb3a93ad9fd14471bf39792
 //5bb3a93ad9fd14471bf397c8
-var bully_messages = ["5bb3a93ad9fd14471bf3977d",
+/*var bully_messages = ["5bb3a93ad9fd14471bf3977d",
 "5bb3a93ad9fd14471bf39791",
 "5bb3a93ad9fd14471bf39792",
-"5bb3a93ad9fd14471bf397c8"];
+"5bb3a93ad9fd14471bf397c8"];*/
 var bully_stats = [];
 var sur_array = [];
+
+//postIDs for the posts we have interest in
+//UPDATE THESE WHENEVER NODE POPULATE IS RUN.
+day1Flagged = "5daf4731b9d8e835881bb160";
+day1FlaggedComment = "5daf4778b9d8e835881bbec9";
+day1NotFlagged = "5daf4732b9d8e835881bb1e2";
+day1NotFlaggedComment = "";
+day2Flagged = "5daf4732b9d8e835881bb209";
+day2FlaggedComment = "";
+day2NotFlagged = "5daf4732b9d8e835881bb1fc";
+day2NotFlaggedComment = "";
+
 
 Array.prototype.sum = function() {
     return this.reduce(function(a,b){return a+b;});
@@ -88,7 +100,7 @@ User.find()
       s_writer.pipe(fs.createWriteStream('results/posts_eatsnaplove.csv'));
       summary_writer.pipe(fs.createWriteStream('results/sum_eatsnaplove.csv'));
 
-      for (var i = users.length - 1; i >= 0; i--)
+      for (var i = users.length - 1; i >= 0; i--) //for each inactive user in the users table
       {
 
         var mlm = {};
@@ -113,10 +125,30 @@ User.find()
         //UI - transparency script_type: String, //type of script they are running in
         //post_nudge: String,
 
-        mlm.script_type = users[i].script_type;
-        sums.script_type = users[i].script_type;
+        //mlm.script_type = users[i].script_type;
+        //sums.script_type = users[i].script_type;
 
-        //profile_perspective
+        //study group information
+
+        //moderation type, comment type (changing mod type labels from db for better readability)
+        if(users[i].flag_group === "none"){
+          mlm.moderationType = "unknown";
+          sums.moderationType = "unknown";
+        } else if (users[i].flag_group === "ai"){
+          mlm.moderationType = "automated";
+          sums.moderationType = "automated";
+        } else if (users[i].flag_group === "users"){
+          mlm.moderationType = "users";
+          sums.moderationType = "users";
+        } else { //this case should NEVER happen, but including as a precaution
+          mlm.moderationType = "?";
+          sums.moderationType = "?";
+        }
+
+        mlm.commentType = users[i].bully_group;
+        sums.commentType = users[i].bully_group;
+
+        //profile_perspective, uses booleans to indicate if a change was made
         if (users[i].post_nudge == 'yes')
         {
           mlm.post_nudge = 1;
@@ -228,7 +260,7 @@ User.find()
           //sur.CompletedStudy = 0;
         }
 
-        if (users[i].study_days.length > 0)
+        if (users[i].study_days.length > 0) //how many visits per day of the study
         {
           mlm.DayOneVists = users[i].study_days[0];
           mlm.DayTwoVists = users[i].study_days[1];
@@ -239,10 +271,27 @@ User.find()
           //sums.DayThreeVists = users[i].study_days[2];
         }
 
-        //per feedAction
+
         mlm.GeneralLikeNumber = 0;
         mlm.GeneralFlagNumber = 0;
 
+        //Responses and times for day 1
+        mlm.day1_modResponse = users[i].day1Response;
+        mlm.day1_modResponseTime = users[i].day1ResponseTime;
+        mlm.day1_policyResponse = users[i].day1ViewPolicyResponse;
+        mlm.day1_policyResponseTime = users[i].day1ViewPolicyResponseTime;
+        mlm.day1_totalPolicyVisits = users[i].day1ViewPolicySources.length;
+        mlm.day1_policyVisitSources = users[i].day1ViewPolicySources; //this is in order of occurrence
+
+        //responses and times for day 2
+        mlm.day2_modResponse = users[i].day2Response;
+        mlm.day2_modResponseTime = users[i].day2ResponseTime;
+        mlm.day2_policyResponse = users[i].day2ViewPolicyResponse;
+        mlm.day2_policyResponseTime = users[i].day2ViewPolicyResponseTime;
+        mlm.day2_totalPolicyVisits = users[i].day2ViewPolicySources.length;
+        mlm.day2_policyVisitSources = users[i].day2ViewPolicySources; //this is in order of occurrence
+
+        //per feedAction
         sur.postID = -1;
         sur.body = "";
         sur.picture = "";
@@ -297,7 +346,46 @@ User.find()
           //if(users[i].feedAction[k].post.id == bully_messages[0] || users[i].feedAction[k].post.id == bully_messages[1] || users[i].feedAction[k].post.id == bully_messages[2]||users[i].feedAction[k].post.id == bully_messages[3])
           //console.log("Look up action ID: "+users[i].feedAction[k].id);
           //console.log("Look up action POST : "+users[i].feedAction[k].post);
+          var currentAction = users[i].feedAction[k];
+          var namePrefix = "";
+          //singling out the posts we are interested in (there are 4)
+          //TODO: Use dynamic vars to name according to the case so I don't have to copy paste the code 4 times with different vars
+          if(currentAction.post.id == day1Flagged){
+            namePrefix = "day1_Flagged_";
+          } else if (currentAction.post.id == day1NotFlagged){
+            namePrefix = "day1_NotFlagged_";
+          } else if (currentAction.post.id == day2Flagged){
+            namePrefix = "day2_Flagged_";
+          } else if (currentAction.post.id == day2NotFlagged){
+            namePrefix = "day2_NotFlagged_";
+          }
 
+          if((currentAction.post.id == day1Flagged) || (currentAction.post.id == day1NotFlagged) || (currentAction.post.id == day2Flagged) || (currentAction.post.id == day2NotFlagged)){
+            mlm[namePrefix + "VictimPostLiked"] = currentAction.liked;
+            mlm[namePrefix +"VictimPostTimesLiked"] = currentAction.likeTime.length;
+            mlm[namePrefix +"VictimPostLastLikeTime"] = currentAction.likeTime[currentAction.likeTime.length -1];
+            if(currentAction.flagTime.length > 0) {
+              mlm[namePrefix +"VictimPostFlagged"] = true;
+            } else {
+              mlm[namePrefix +"VictimPostFlagged"] = false;
+            }
+            mlm[namePrefix +"VictimPostFlaggedTime"] = currentAction.flagTime[currentAction.flagTime.length - 1];
+            mlm[namePrefix +"VictimPostTotalViews"] = currentAction.viewedTime.length;
+
+            //info about the bully comment
+            for(var j = currentAction.comments.length - 1; j >= 0; j--){
+              currentComment = currentAction.comments[j];
+              if(currentComment.comment.id === day1FlaggedComment){
+                mlm[namePrefix+"BullyCommentLiked"] = currentComment.liked;
+                mlm[namePrefix +"BullyCommentTimesLiked"] = currentComment.likeTime.length;
+                mlm[namePrefix +"BullyCommentLastLikeTime"] = currentComment.likeTime[currentComment.likeTime.length -1];
+                mlm[namePrefix+"BullyCommentFlagged"] = currentComment.flagged;
+                mlm[namePrefix +"BullyCommentLastFlagTime"] = currentComment.flagTime[currentComment.flagTime.length -1];
+              }
+            }
+          }
+          //done exporting info about special posts
+          
           //console.log(util.inspect(users[i].feedAction[k], false, null))
           if(users[i].feedAction[k].post == null)
           {
