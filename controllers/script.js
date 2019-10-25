@@ -738,7 +738,8 @@ exports.postUpdateFeedAction = (req, res, next) => {
       //FLAG A COMMENT
       else if(req.body.flag)
       {
-        let flag = req.body.flag - user.feedAction[feedIndex].startTime
+        //let flag = req.body.flag - user.feedAction[feedIndex].startTime
+        let flag = req.body.flag - user.createdAt;
         console.log("!!!!!!New FIRST COMMENT flag Time: ", flag);
         if (user.feedAction[feedIndex].comments[commentIndex].flagTime)
         {

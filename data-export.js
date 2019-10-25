@@ -34,13 +34,15 @@ var sur_array = [];
 //postIDs for the posts we have interest in
 //UPDATE THESE WHENEVER NODE POPULATE IS RUN.
 day1Flagged = "5daf4731b9d8e835881bb160";
-day1FlaggedComment = "5daf4778b9d8e835881bbec9";
+day1FlaggedCommentUnambig = "5daf4778b9d8e835881bbec9";
+day1FlaggedCommentAmbig = "5daf4778b9d8e835881bbeca";
 day1NotFlagged = "5daf4732b9d8e835881bb1e2";
-day1NotFlaggedComment = "";
+day1NotFlaggedComment = "5daf4778b9d8e835881bbecb";
 day2Flagged = "5daf4732b9d8e835881bb209";
-day2FlaggedComment = "";
+day2FlaggedCommentUnambig = "5daf4778b9d8e835881bbecc";
+day2FlaggedCommentAmbig = "5daf478fb9d8e835881bbfe6";
 day2NotFlagged = "5daf4732b9d8e835881bb1fc";
-day2NotFlaggedComment = "";
+day2NotFlaggedComment = "5daf478fb9d8e835881bbfe7";
 
 
 Array.prototype.sum = function() {
@@ -137,7 +139,7 @@ User.find()
         } else if (users[i].flag_group === "ai"){
           mlm.moderationType = "automated";
           sums.moderationType = "automated";
-        } else if (users[i].flag_group === "users"){
+        } else if (users[i].flag_group === "user"){
           mlm.moderationType = "users";
           sums.moderationType = "users";
         } else { //this case should NEVER happen, but including as a precaution
@@ -275,6 +277,12 @@ User.find()
         mlm.GeneralLikeNumber = 0;
         mlm.GeneralFlagNumber = 0;
 
+        mlm.GeneralPostNumber = users[i].numPosts + 1;
+        mlm.GeneralCommentNumber = users[i].numComments + 1;
+
+        sums.GeneralPostNumber = mlm.GeneralPostNumber;
+        sums.GeneralCommentNumber = mlm.GeneralCommentNumber;
+
         //Responses and times for day 1
         mlm.day1_modResponse = users[i].day1Response;
         mlm.day1_modResponseTime = users[i].day1ResponseTime;
@@ -340,12 +348,10 @@ User.find()
         }
 
         //per feedAction
-        for (var k = users[i].feedAction.length - 1; k >= 0; k--)
+        //for (var k = users[i].feedAction.length - 1; k >= 0; k--)
+        for (var k = 0; k <= (users[i].feedAction.length - 1); k++)
         {
-          //is a bully Victim message
-          //if(users[i].feedAction[k].post.id == bully_messages[0] || users[i].feedAction[k].post.id == bully_messages[1] || users[i].feedAction[k].post.id == bully_messages[2]||users[i].feedAction[k].post.id == bully_messages[3])
-          //console.log("Look up action ID: "+users[i].feedAction[k].id);
-          //console.log("Look up action POST : "+users[i].feedAction[k].post);
+
           var currentAction = users[i].feedAction[k];
           var namePrefix = "";
           //singling out the posts we are interested in (there are 4)
@@ -364,6 +370,7 @@ User.find()
             mlm[namePrefix + "VictimPostLiked"] = currentAction.liked;
             mlm[namePrefix +"VictimPostTimesLiked"] = currentAction.likeTime.length;
             mlm[namePrefix +"VictimPostLastLikeTime"] = currentAction.likeTime[currentAction.likeTime.length -1];
+            //logic to determine if flagged or not based on if there are any timestamps
             if(currentAction.flagTime.length > 0) {
               mlm[namePrefix +"VictimPostFlagged"] = true;
             } else {
@@ -371,21 +378,47 @@ User.find()
             }
             mlm[namePrefix +"VictimPostFlaggedTime"] = currentAction.flagTime[currentAction.flagTime.length - 1];
             mlm[namePrefix +"VictimPostTotalViews"] = currentAction.viewedTime.length;
-
-            //info about the bully comment
-            for(var j = currentAction.comments.length - 1; j >= 0; j--){
+            //calculate average view time for the post
+            var averageVictimPostViewTime = 0;
+            for(var m = currentAction.viewedTime.length - 1; m >= 0; m--){
+              averageVictimPostViewTime = averageVictimPostViewTime + currentAction.viewedTime[m];
+            }
+            if(currentAction.viewedTime.length != 0){
+              averageVictimPostViewTime = averageVictimPostViewTime / currentAction.viewedTime.length;
+              mlm[namePrefix + "VictimPostAvgViewTime"] = averageVictimPostViewTime;
+            }
+            //info about the bully comment, report correct comment based on ambig/unambig bully group
+            //for(var j = currentAction.comments.length - 1; j >= 0; j--){
+            for(var j = 0; j <= (currentAction.comments.length - 1); j++){
               currentComment = currentAction.comments[j];
-              if(currentComment.comment.id === day1FlaggedComment){
-                mlm[namePrefix+"BullyCommentLiked"] = currentComment.liked;
-                mlm[namePrefix +"BullyCommentTimesLiked"] = currentComment.likeTime.length;
-                mlm[namePrefix +"BullyCommentLastLikeTime"] = currentComment.likeTime[currentComment.likeTime.length -1];
-                mlm[namePrefix+"BullyCommentFlagged"] = currentComment.flagged;
-                mlm[namePrefix +"BullyCommentLastFlagTime"] = currentComment.flagTime[currentComment.flagTime.length -1];
+              console.log("####");
+              console.log("iterating through the comments...");
+              console.log(currentComment.new_comment);
+              console.log(typeof currentComment.new_comment);
+              if(currentComment.new_commment === false){ //safeguard - everything will break if you try to query the comment id of a user comment
+                console.log("You're past the safeguard...");
+                if(users[i].bully_group === "ambig"){
+                  if((currentComment.comment.id === day1FlaggedCommentAmbig) || (currentComment.comment.id === day2FlaggedCommentAmbig)){
+                    mlm[namePrefix+"BullyCommentLiked"] = currentComment.liked;
+                    mlm[namePrefix +"BullyCommentTimesLiked"] = currentComment.likeTime.length;
+                    mlm[namePrefix +"BullyCommentLastLikeTime"] = currentComment.likeTime[currentComment.likeTime.length -1];
+                    mlm[namePrefix+"BullyCommentFlagged"] = currentComment.flagged;
+                    mlm[namePrefix +"BullyCommentLastFlagTime"] = currentComment.flagTime[currentComment.flagTime.length -1];
+                  }
+                } else if (users[i].bully_group === "unambig"){
+                  if((currentComment.comment.id === day1FlaggedCommentUnambig) || (currentComment.comment.id === day2FlaggedCommentUnambig)){
+                    mlm[namePrefix+"BullyCommentLiked"] = currentComment.liked;
+                    mlm[namePrefix +"BullyCommentTimesLiked"] = currentComment.likeTime.length;
+                    mlm[namePrefix +"BullyCommentLastLikeTime"] = currentComment.likeTime[currentComment.likeTime.length -1];
+                    mlm[namePrefix+"BullyCommentFlagged"] = currentComment.flagged;
+                    mlm[namePrefix +"BullyCommentLastFlagTime"] = currentComment.flagTime[currentComment.flagTime.length -1];
+                  }
+                }
               }
             }
           }
           //done exporting info about special posts
-          
+
           //console.log(util.inspect(users[i].feedAction[k], false, null))
           if(users[i].feedAction[k].post == null)
           {
@@ -414,13 +447,7 @@ User.find()
         }//for Per FeedAction
 
       //mlm.GeneralReplyNumber = users[i].numReplies + 1;
-      mlm.GeneralPostNumber = users[i].numPosts + 1;
-      mlm.GeneralCommentNumber = users[i].numComments + 1;
 
-
-
-      sums.GeneralPostNumber = mlm.GeneralPostNumber;
-      sums.GeneralCommentNumber = mlm.GeneralCommentNumber;
       summary_writer.write(sums);
 
 
