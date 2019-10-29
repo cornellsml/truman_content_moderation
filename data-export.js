@@ -33,16 +33,16 @@ var sur_array = [];
 
 //postIDs for the posts we have interest in
 //UPDATE THESE WHENEVER NODE POPULATE IS RUN.
-day1Flagged = "5daf4731b9d8e835881bb160";
-day1FlaggedCommentUnambig = "5daf4778b9d8e835881bbec9";
-day1FlaggedCommentAmbig = "5daf4778b9d8e835881bbeca";
-day1NotFlagged = "5daf4732b9d8e835881bb1e2";
-day1NotFlaggedComment = "5daf4778b9d8e835881bbecb";
-day2Flagged = "5daf4732b9d8e835881bb209";
-day2FlaggedCommentUnambig = "5daf4778b9d8e835881bbecc";
-day2FlaggedCommentAmbig = "5daf478fb9d8e835881bbfe6";
-day2NotFlagged = "5daf4732b9d8e835881bb1fc";
-day2NotFlaggedComment = "5daf478fb9d8e835881bbfe7";
+day1Flagged = "5db8869b601c9f2980652b5c";
+day1FlaggedCommentUnambig = "5db886e3601c9f29806538b2";
+day1FlaggedCommentAmbig = "5db886e3601c9f29806538b3";
+day1NotFlagged = "5db8869c601c9f2980652be4";
+day1NotFlaggedComment = "5db886e3601c9f29806538b4";
+day2Flagged = "5db8869c601c9f2980652bdc";
+day2FlaggedCommentUnambig = "5db886e3601c9f29806538b5";
+day2FlaggedCommentAmbig = "5db886f9601c9f29806539ce";
+day2NotFlagged = "5db8869c601c9f2980652bee";
+day2NotFlaggedComment = "5db886f9601c9f29806539cf";
 
 
 Array.prototype.sum = function() {
@@ -283,6 +283,47 @@ User.find()
         sums.GeneralPostNumber = mlm.GeneralPostNumber;
         sums.GeneralCommentNumber = mlm.GeneralCommentNumber;
 
+        //info about specific page views
+        mlm.visits_notification = 0;
+        mlm.visits_day1_flagged_victim = 0;
+        mlm.visits_day1_flagged_bully = 0;
+        mlm.visits_day1_notflagged_victim = 0;
+        mlm.visits_day1_notflagged_bully = 0;
+        mlm.visits_day2_flagged_victim= 0;
+        mlm.visits_day2_flagged_bully = 0;
+        mlm.visits_day2_flagged_victim = 0;
+        mlm.visits_day2_notflagged_bully = 0;
+        mlm.visits_general = 0;
+
+        for(var z = 0; z < users[i].pageLog.length; ++z){
+
+            if(users[i].pageLog[z].page == "Notifications")
+              mlm.visits_notification++;
+
+            //day 1
+            else if (users[i].pageLog[z].page == "casssssssssie")
+              mlm.visits_day1_flagged_victim++;
+            else if (users[i].pageLog[z].page == "bblueberryy")
+              mlm.visits_day1_flagged_bully++;
+            else if (users[i].pageLog[z].page == "jake_turk")
+              mlm.visits_day1_notflagged_victim++;
+            else if (users[i].pageLog[z].page == "jupiterpride")
+              mlm.visits_day1_notflagged_bully++;
+
+            //day 2
+            else if (users[i].pageLog[z].page == "SamTHEMAN")
+              mlm.visits_day2_flagged_victim++;
+            else if (users[i].pageLog[z].page == "Smitty12")
+              mlm.visits_day2_flagged_bully++;
+            else if (users[i].pageLog[z].page == "southerngirlCel")
+              mlm.visits_day2_notflagged_victim++;
+            else if (users[i].pageLog[z].page == "sweetpea")
+              mlm.visits_day2_notflagged_bully++;
+
+            else
+              mlm.visits_general++;
+        }
+
         //Responses and times for day 1
         mlm.day1_modResponse = users[i].day1Response;
         mlm.day1_modResponseTime = users[i].day1ResponseTime;
@@ -391,14 +432,9 @@ User.find()
             //for(var j = currentAction.comments.length - 1; j >= 0; j--){
             for(var j = 0; j <= (currentAction.comments.length - 1); j++){
               currentComment = currentAction.comments[j];
-              console.log("####");
-              console.log("iterating through the comments...");
-              console.log(currentComment.new_comment);
-              console.log(typeof currentComment.new_comment);
-              if(currentComment.new_commment === false){ //safeguard - everything will break if you try to query the comment id of a user comment
-                console.log("You're past the safeguard...");
+              if(!currentComment.new_commment){ //safeguard - everything will break if you try to query the comment id of a user comment
                 if(users[i].bully_group === "ambig"){
-                  if((currentComment.comment.id === day1FlaggedCommentAmbig) || (currentComment.comment.id === day2FlaggedCommentAmbig)){
+                  if((currentComment.comment == day1FlaggedCommentAmbig) || (currentComment.comment == day2FlaggedCommentAmbig)){
                     mlm[namePrefix+"BullyCommentLiked"] = currentComment.liked;
                     mlm[namePrefix +"BullyCommentTimesLiked"] = currentComment.likeTime.length;
                     mlm[namePrefix +"BullyCommentLastLikeTime"] = currentComment.likeTime[currentComment.likeTime.length -1];
@@ -406,7 +442,7 @@ User.find()
                     mlm[namePrefix +"BullyCommentLastFlagTime"] = currentComment.flagTime[currentComment.flagTime.length -1];
                   }
                 } else if (users[i].bully_group === "unambig"){
-                  if((currentComment.comment.id === day1FlaggedCommentUnambig) || (currentComment.comment.id === day2FlaggedCommentUnambig)){
+                  if((currentComment.comment === day1FlaggedCommentUnambig) || (currentComment.comment === day2FlaggedCommentUnambig)){
                     mlm[namePrefix+"BullyCommentLiked"] = currentComment.liked;
                     mlm[namePrefix +"BullyCommentTimesLiked"] = currentComment.likeTime.length;
                     mlm[namePrefix +"BullyCommentLastLikeTime"] = currentComment.likeTime[currentComment.likeTime.length -1];
