@@ -31,19 +31,25 @@ var summary_writer = csvWriter();
 var bully_stats = [];
 var sur_array = [];
 
-//postIDs for the posts we have interest in
+//postIDs for the posts and comments we have interest in
 //UPDATE THESE WHENEVER NODE POPULATE IS RUN.
 day1Flagged = "5db8869b601c9f2980652b5c";
 day1FlaggedCommentUnambig = "5db886e3601c9f29806538b2";
 day1FlaggedCommentAmbig = "5db886e3601c9f29806538b3";
 day1NotFlagged = "5db8869c601c9f2980652be4";
 day1NotFlaggedComment = "5db886e3601c9f29806538b4";
+
 day2Flagged = "5db8869c601c9f2980652bdc";
 day2FlaggedCommentUnambig = "5db886e3601c9f29806538b5";
 day2FlaggedCommentAmbig = "5db886f9601c9f29806539ce";
 day2NotFlagged = "5db8869c601c9f2980652bee";
 day2NotFlaggedComment = "5db886f9601c9f29806539cf";
 
+otherComment229 = "5db886f0601c9f298065395a"; //dinner of champions
+otherComment263 = "5db886f2601c9f2980653978"; //so pretty!
+otherComment150 = "5db886ea601c9f298065390f"; // first try
+otherComment310 = "5db886f5601c9f298065399d"; //nice!
+//end custom ids
 
 Array.prototype.sum = function() {
     return this.reduce(function(a,b){return a+b;});
@@ -235,17 +241,6 @@ User.find()
           mlm.OS = "NA";
         }
 
-
-        mlm.notificationpage = 0;
-        mlm.generalpagevisit = 0;
-        for(var z = 0; z < users[i].pageLog.length; ++z){
-            if(users[i].pageLog[z].page == "Notifications")
-              mlm.notificationpage++;
-            else
-              mlm.generalpagevisit++;
-        }
-
-
         mlm.citevisits = users[i].log.length;
         sums.citevisits = users[i].log.length;
 
@@ -292,6 +287,7 @@ User.find()
         mlm.visits_day2_flagged_victim= 0;
         mlm.visits_day2_flagged_bully = 0;
         mlm.visits_day2_flagged_victim = 0;
+        mlm.visits_day2_notflagged_victim = 0;
         mlm.visits_day2_notflagged_bully = 0;
         mlm.visits_general = 0;
 
@@ -408,17 +404,17 @@ User.find()
           }
 
           if((currentAction.post.id == day1Flagged) || (currentAction.post.id == day1NotFlagged) || (currentAction.post.id == day2Flagged) || (currentAction.post.id == day2NotFlagged)){
-            mlm[namePrefix + "VictimPostLiked"] = currentAction.liked;
-            mlm[namePrefix +"VictimPostTimesLiked"] = currentAction.likeTime.length;
-            mlm[namePrefix +"VictimPostLastLikeTime"] = currentAction.likeTime[currentAction.likeTime.length -1];
+            mlm[namePrefix + "VictimPost_Liked"] = currentAction.liked;
+            mlm[namePrefix +"VictimPost_TimesLiked"] = currentAction.likeTime.length;
+            mlm[namePrefix +"VictimPost_LastLikeTime"] = currentAction.likeTime[currentAction.likeTime.length -1];
             //logic to determine if flagged or not based on if there are any timestamps
             if(currentAction.flagTime.length > 0) {
-              mlm[namePrefix +"VictimPostFlagged"] = true;
+              mlm[namePrefix +"VictimPost_Flagged"] = true;
             } else {
-              mlm[namePrefix +"VictimPostFlagged"] = false;
+              mlm[namePrefix +"VictimPost_Flagged"] = false;
             }
-            mlm[namePrefix +"VictimPostFlaggedTime"] = currentAction.flagTime[currentAction.flagTime.length - 1];
-            mlm[namePrefix +"VictimPostTotalViews"] = currentAction.viewedTime.length;
+            mlm[namePrefix +"VictimPost_FlaggedTime"] = currentAction.flagTime[currentAction.flagTime.length - 1];
+            mlm[namePrefix +"VictimPost_TotalViews"] = currentAction.viewedTime.length;
             //calculate average view time for the post
             var averageVictimPostViewTime = 0;
             for(var m = currentAction.viewedTime.length - 1; m >= 0; m--){
@@ -426,34 +422,64 @@ User.find()
             }
             if(currentAction.viewedTime.length != 0){
               averageVictimPostViewTime = averageVictimPostViewTime / currentAction.viewedTime.length;
-              mlm[namePrefix + "VictimPostAvgViewTime"] = averageVictimPostViewTime;
+              mlm[namePrefix + "VictimPost_AvgViewTime"] = averageVictimPostViewTime;
             }
             //info about the bully comment, report correct comment based on ambig/unambig bully group
             //for(var j = currentAction.comments.length - 1; j >= 0; j--){
+
             for(var j = 0; j <= (currentAction.comments.length - 1); j++){
+
+              //shortcut to get current comment
               currentComment = currentAction.comments[j];
+
+              //get the comment id for normal Comments data label
+              var otherCommentID = 0;
+
+              if(currentComment.comment == otherComment229){
+                otherCommentID = 229;
+              }else if (currentComment.comment == otherComment263){
+                otherCommentID = 263;
+              } else if (currentComment.comment == otherComment150){
+                otherCommentID = 150;
+              } else if (currentComment.comment == otherComment310){
+                otherCommentID = 310;
+              } else {
+                otherCommentID = 000;
+              }
+
               if(!currentComment.new_commment){ //safeguard - everything will break if you try to query the comment id of a user comment
+                //only want to show data for the correct case, ambig or unambig
                 if(users[i].bully_group === "ambig"){
-                  if((currentComment.comment == day1FlaggedCommentAmbig) || (currentComment.comment == day2FlaggedCommentAmbig)){
-                    mlm[namePrefix+"BullyCommentLiked"] = currentComment.liked;
-                    mlm[namePrefix +"BullyCommentTimesLiked"] = currentComment.likeTime.length;
-                    mlm[namePrefix +"BullyCommentLastLikeTime"] = currentComment.likeTime[currentComment.likeTime.length -1];
-                    mlm[namePrefix+"BullyCommentFlagged"] = currentComment.flagged;
-                    mlm[namePrefix +"BullyCommentLastFlagTime"] = currentComment.flagTime[currentComment.flagTime.length -1];
+                  if((currentComment.comment == day1FlaggedCommentAmbig) || (currentComment.comment == day1NotFlaggedComment) || (currentComment.comment == day2FlaggedCommentAmbig) || (currentComment.comment == day2NotFlaggedComment)){
+                    //this is a bully comment that we want all the data for
+                    mlm[namePrefix+"BullyComment_Liked"] = currentComment.liked;
+                    mlm[namePrefix +"BullyComment_TimesLiked"] = currentComment.likeTime.length;
+                    mlm[namePrefix +"BullyComment_LastLikeTime"] = currentComment.likeTime[currentComment.likeTime.length -1];
+                    mlm[namePrefix+"BullyComment_Flagged"] = currentComment.flagged;
+                    mlm[namePrefix +"BullyComment_LastFlagTime"] = currentComment.flagTime[currentComment.flagTime.length -1];
+                  } else { //this is a normal comment that we want only half the data for
+                    mlm[namePrefix+"OtherComment"+otherCommentID+"_Liked"] = currentComment.liked;
+                    mlm[namePrefix+"OtherComment"+otherCommentID+"_TimesLiked"] = currentComment.likeTime.length;
+                    mlm[namePrefix+"OtherComment"+otherCommentID+"_Flagged"] = currentComment.flagged;
                   }
                 } else if (users[i].bully_group === "unambig"){
-                  if((currentComment.comment === day1FlaggedCommentUnambig) || (currentComment.comment === day2FlaggedCommentUnambig)){
-                    mlm[namePrefix+"BullyCommentLiked"] = currentComment.liked;
-                    mlm[namePrefix +"BullyCommentTimesLiked"] = currentComment.likeTime.length;
-                    mlm[namePrefix +"BullyCommentLastLikeTime"] = currentComment.likeTime[currentComment.likeTime.length -1];
-                    mlm[namePrefix+"BullyCommentFlagged"] = currentComment.flagged;
-                    mlm[namePrefix +"BullyCommentLastFlagTime"] = currentComment.flagTime[currentComment.flagTime.length -1];
+                  if((currentComment.comment == day1FlaggedCommentUnambig) || (currentComment.comment == day1NotFlaggedComment) || (currentComment.comment == day2FlaggedCommentUnambig) || (currentComment.comment == day2NotFlaggedComment)){
+                    //this is a bully comment that we want all the data for
+                    mlm[namePrefix+"BullyComment_Liked"] = currentComment.liked;
+                    mlm[namePrefix +"BullyComment_TimesLiked"] = currentComment.likeTime.length;
+                    mlm[namePrefix +"BullyComment_LastLikeTime"] = currentComment.likeTime[currentComment.likeTime.length -1];
+                    mlm[namePrefix+"BullyComment_Flagged"] = currentComment.flagged;
+                    mlm[namePrefix +"BullyComment_LastFlagTime"] = currentComment.flagTime[currentComment.flagTime.length -1];
+                  } else { //this is a normal comment that we only want half the data for
+                    mlm[namePrefix+"OtherComment"+otherCommentID+"_Liked"] = currentComment.liked;
+                    mlm[namePrefix+"OtherComment"+otherCommentID+"_TimesLiked"] = currentComment.likeTime.length;
+                    mlm[namePrefix+"OtherComment"+otherCommentID+"_Flagged"] = currentComment.flagged;
                   }
                 }
               }
             }
           }
-          //done exporting info about special posts
+          //done exporting info about special posts!
 
           //console.log(util.inspect(users[i].feedAction[k], false, null))
           if(users[i].feedAction[k].post == null)
