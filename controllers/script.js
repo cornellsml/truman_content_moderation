@@ -875,7 +875,8 @@ exports.postUpdateFeedAction = (req, res, next) => {
       //array of flagTime is empty and we have a new (first) Flag event
       if ((!user.feedAction[feedIndex].flagTime)&&req.body.flag && (req.body.flag > user.feedAction[feedIndex].startTime))
       {
-        let flag = req.body.flag - user.feedAction[feedIndex].startTime
+        //let flag = req.body.flag - user.feedAction[feedIndex].startTime
+        let flag = req.body.flag - user.createdAt;
         console.log("!!!!!New FIRST FLAG Time: ", flag);
         user.feedAction[feedIndex].flagTime = [flag];
         //console.log("!!!!!adding FIRST FLAG time [0] now which is  ", user.feedAction[feedIndex].flagTime[0]);
@@ -884,7 +885,8 @@ exports.postUpdateFeedAction = (req, res, next) => {
       //Already have a flagTime Array, New FLAG event, need to add this to flagTime array
       else if ((user.feedAction[feedIndex].flagTime)&&req.body.flag && (req.body.flag > user.feedAction[feedIndex].startTime))
       {
-        let flag = req.body.flag - user.feedAction[feedIndex].startTime
+        //let flag = req.body.flag - user.feedAction[feedIndex].startTime
+        let flag = req.body.flag - user.createdAt;
         console.log("%%%%%Add new FLAG Time: ", flag);
         user.feedAction[feedIndex].flagTime.push(flag);
       }

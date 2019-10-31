@@ -105,8 +105,8 @@ User.find()
     function(err, users){
 
       mlm_writer.pipe(fs.createWriteStream('results/mlm_eatsnaplove.csv'));
-      s_writer.pipe(fs.createWriteStream('results/posts_eatsnaplove.csv'));
-      summary_writer.pipe(fs.createWriteStream('results/sum_eatsnaplove.csv'));
+      //s_writer.pipe(fs.createWriteStream('results/posts_eatsnaplove.csv'));
+      //summary_writer.pipe(fs.createWriteStream('results/sum_eatsnaplove.csv'));
 
       for (var i = users.length - 1; i >= 0; i--) //for each inactive user in the users table
       {
@@ -241,8 +241,8 @@ User.find()
           mlm.OS = "NA";
         }
 
-        mlm.citevisits = users[i].log.length;
-        sums.citevisits = users[i].log.length;
+        mlm.sitevisits = users[i].log.length;
+        sums.sitevisits = users[i].log.length;
 
         if (users[i].completed)
         {
@@ -270,7 +270,11 @@ User.find()
 
 
         mlm.GeneralLikeNumber = 0;
+        mlm.GeneralPostLikes = 0;
+        mlm.GeneralCommentLikes = 0;
         mlm.GeneralFlagNumber = 0;
+        mlm.GeneralPostFlags = 0;
+        mlm.GeneralCommentFlags = 0;
 
         mlm.GeneralPostNumber = users[i].numPosts + 1;
         mlm.GeneralCommentNumber = users[i].numComments + 1;
@@ -295,7 +299,6 @@ User.find()
 
             if(users[i].pageLog[z].page == "Notifications")
               mlm.visits_notification++;
-
             //day 1
             else if (users[i].pageLog[z].page == "casssssssssie")
               mlm.visits_day1_flagged_victim++;
@@ -341,7 +344,7 @@ User.find()
         sur.body = "";
         sur.picture = "";
         sur.absTime = "";
-        sur.citevisits = -1;
+        sur.sitevisits = -1;
         sur.generalpagevisit = -1;
         sur.DayOneVists = -1;
         sur.DayTwoVists = -1;
@@ -368,7 +371,7 @@ User.find()
           if(postStatsIndex!=-1)
           {
               console.log("Check post LOG!!!!!!");
-              temp_post.citevisits = users[i].postStats[postStatsIndex].citevisits;
+              temp_post.sitevisits = users[i].postStats[postStatsIndex].citevisits;
               temp_post.generalpagevisit = users[i].postStats[postStatsIndex].generalpagevisit;
               temp_post.DayOneVists = users[i].postStats[postStatsIndex].DayOneVists;
               temp_post.DayTwoVists = users[i].postStats[postStatsIndex].DayTwoVists;
@@ -458,6 +461,7 @@ User.find()
                     mlm[namePrefix+"BullyComment_Flagged"] = currentComment.flagged;
                     mlm[namePrefix +"BullyComment_LastFlagTime"] = currentComment.flagTime[currentComment.flagTime.length -1];
                   } else { //this is a normal comment that we want only half the data for
+                    console.log("new comment? " + currentComment.new_commment);
                     mlm[namePrefix+"OtherComment"+otherCommentID+"_Liked"] = currentComment.liked;
                     mlm[namePrefix+"OtherComment"+otherCommentID+"_TimesLiked"] = currentComment.likeTime.length;
                     mlm[namePrefix+"OtherComment"+otherCommentID+"_Flagged"] = currentComment.flagged;
@@ -490,27 +494,45 @@ User.find()
           //not a bully message
           else
           {
+            //getting general like and flag counts, this counts the relevant posts and comments as well
+
+            var currentActionNormal = users[i].feedAction[k];
 
             //total number of likes
             if(users[i].feedAction[k].liked)
             {
               mlm.GeneralLikeNumber++;
+              mlm.GeneralPostLikes++;
             }
 
             //total number of flags
             if(users[i].feedAction[k].flagTime[0])
             {
               mlm.GeneralFlagNumber++;
+              mlm.GeneralPostFlags++;
             }
 
+            //also need to count likes and flags on comments, so iterate through the comments
+            for(var n = 0; n <= (currentActionNormal.comments.length - 1); n++){
+              currentComment = currentActionNormal.comments[n];
+              //console.log(currentComment);
+              if(currentComment.liked){
+                mlm.GeneralLikeNumber++;
+                mlm.GeneralCommentLikes++;
+              }
+              if(currentComment.flagged){
+                mlm.GeneralFlagNumber++;
+                mlm.GeneralCommentFlags++;
+              }
+            }
           }
 
 
-        }//for Per FeedAction
+        }//end of Per FeedAction
 
       //mlm.GeneralReplyNumber = users[i].numReplies + 1;
 
-      summary_writer.write(sums);
+      //summary_writer.write(sums);
 
 
       mlm_writer.write(mlm);
@@ -530,12 +552,12 @@ User.find()
       for (var zz = 0; zz < sur_array.length; zz++) {
       //console.log("writing user "+ mlm_array[zz].email);
       console.log("writing Post for user "+ zz);
-      s_writer.write(sur_array[zz]);
+      //s_writer.write(sur_array[zz]);
     }
 
     mlm_writer.end();
-    summary_writer.end();
-    s_writer.end();
+    //summary_writer.end();
+    //s_writer.end();
     console.log('Wrote MLM!');
     mongoose.connection.close();
 

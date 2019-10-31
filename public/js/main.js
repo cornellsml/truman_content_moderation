@@ -400,6 +400,7 @@ $("i.big.send.link.icon").click(function() {
   });
 
    //this is the FLAG button
+   //flag a comment
   $('a.flag.comment')
   .on('click', function() {
 
@@ -491,6 +492,7 @@ $("i.big.send.link.icon").click(function() {
   })
 
   //this is the POST FLAG button
+  //flag a post
   $('.flag.button')
   .on('click', function() {
 
