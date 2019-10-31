@@ -411,6 +411,11 @@ User.find()
         mlm.day2_NotFlagged_VictimPost_FlaggedTime = "";
         mlm.day2_NotFlagged_VictimPost_TotalViews = "";
         mlm.day2_NotFlagged_VictimPost_AvgViewTime = "";
+        mlm.day2_NotFlagged_BullyComment_Liked = "";
+        mlm.day2_NotFlagged_BullyComment_TimesLiked = "";
+        mlm.day2_NotFlagged_BullyComment_LastLikeTime = "";
+        mlm.day2_NotFlagged_BullyComment_Flagged = "";
+        mlm.day2_NotFlagged_BullyComment_LastFlagTime = "";
 
         //end the big list of data labels!!!
         //Now fill them
