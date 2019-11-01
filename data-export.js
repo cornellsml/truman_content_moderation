@@ -517,7 +517,6 @@ User.find()
               }
 
               if(!currentComment.new_commment){ //safeguard - everything will break if you try to query the comment id of a user comment
-                console.log("Is it a new comment? "  + currentComment.new_comment);
                 //only want to show data for the correct case, ambig or unambig
                 if(users[i].bully_group === "ambig"){
                   if((currentComment.comment == day1FlaggedCommentAmbig) || (currentComment.comment == day1NotFlaggedComment) || (currentComment.comment == day2FlaggedCommentAmbig) || (currentComment.comment == day2NotFlaggedComment)){
