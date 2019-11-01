@@ -401,9 +401,9 @@ User.find()
         mlm.day2_Flagged_BullyComment_LastLikeTime = "";
         mlm.day2_Flagged_BullyComment_Flagged = "";
         mlm.day2_Flagged_BullyComment_LastFlagTime = "";
-        mlm.day1_Flagged_OtherComment310_Liked = "";
-        mlm.day1_Flagged_OtherComment310_TimesLiked = "";
-        mlm.day1_Flagged_OtherComment310_Flagged = "";
+        mlm.day2_Flagged_OtherComment310_Liked = "";
+        mlm.day2_Flagged_OtherComment310_TimesLiked = "";
+        mlm.day2_Flagged_OtherComment310_Flagged = "";
         mlm.day2_NotFlagged_VictimPost_Liked = "";
         mlm.day2_NotFlagged_VictimPost_TimesLiked = "";
         mlm.day2_NotFlagged_VictimPost_LastLikeTime = "";
