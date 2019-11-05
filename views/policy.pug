@@ -28,3 +28,46 @@ block content
     br
     br
     br
+      
+  block scripts
+    script().
+      //Timing how long the user looks at this page
+      //from https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
+      
+      // Set the name of the hidden property and the change event for visibility
+      var hidden, visibilityChange; 
+      
+      if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
+        hidden = "hidden";
+        visibilityChange = "visibilitychange";
+      } else if (typeof document.msHidden !== "undefined") {
+        hidden = "msHidden";
+        visibilityChange = "msvisibilitychange";
+      } else if (typeof document.webkitHidden !== "undefined") {
+        hidden = "webkitHidden";
+        visibilityChange = "webkitvisibilitychange";
+      }
+
+
+      // If the page is hidden, stop the timer and push total time in db
+      // if the page is shown, start the timer (i.e. get the current time)
+      
+      var policyPageViewTimer = Date.now();
+      console.log("Initial policy timer: " + policyPageViewTimer);
+      function handleVisibilityChange() {
+        console.log("visibility change detected!");
+        if (document[hidden]) {
+          var currentTime = Date.now();
+          totalViewTime = currentTime - policyPageViewTimer;
+          console.log("View Time: "+totalViewTime);
+          //post to db 
+          $.post("/view_policy_viewtime", { totalPolicyViewTime: totalViewTime, startTime: policyPageViewTimer, _csrf : $('meta[name="csrf-token"]').attr('content') } );
+        } else {
+          //start the timer
+          policyPageViewTimer = Date.now();
+          console.log("Timer started: "+policyPageViewTimer);
+        }
+      }
+      
+      // Handle page visibility change   
+      document.addEventListener(visibilityChange, handleVisibilityChange, false);

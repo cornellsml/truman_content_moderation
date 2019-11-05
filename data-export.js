@@ -157,7 +157,7 @@ User.find()
         sums.commentType = users[i].bully_group;
 
         //profile_perspective, uses booleans to indicate if a change was made
-        if (users[i].post_nudge == 'yes')
+        /*if (users[i].post_nudge == 'yes')
         {
           mlm.post_nudge = 1;
           sums.post_nudge = 1;
@@ -166,7 +166,7 @@ User.find()
         {
           mlm.post_nudge = 0;
           sums.post_nudge = 0;
-        }
+        }*/
 
 
         if (users[i].profile.name)
@@ -284,6 +284,9 @@ User.find()
 
         //info about specific page views
         mlm.visits_notification = 0;
+        mlm.visits_policy = 0;
+        mlm.viewtime_firstPoliyVisit = 0;
+        mlm.average_viewtime_allPolicyVisits = 0;
         mlm.visits_day1_flagged_victim = 0;
         mlm.visits_day1_flagged_bully = 0;
         mlm.visits_day1_notflagged_victim = 0;
@@ -297,38 +300,53 @@ User.find()
 
         for(var z = 0; z < users[i].pageLog.length; ++z){
 
-            if(users[i].pageLog[z].page == "Notifications")
+            if(users[i].pageLog[z].page == "Notifications"){
               mlm.visits_notification++;
+            }else if((users[i].pageLog[z].page == "PolicyComment") ||(users[i].pageLog[z].page == "PolicyMenu")) {
+              mlm.visits_policy++;
+
             //day 1
-            else if (users[i].pageLog[z].page == "casssssssssie")
+            }else if (users[i].pageLog[z].page == "casssssssssie") {
               mlm.visits_day1_flagged_victim++;
-            else if (users[i].pageLog[z].page == "bblueberryy")
+            }else if (users[i].pageLog[z].page == "bblueberryy"){
               mlm.visits_day1_flagged_bully++;
-            else if (users[i].pageLog[z].page == "jake_turk")
+            }else if (users[i].pageLog[z].page == "jake_turk"){
               mlm.visits_day1_notflagged_victim++;
-            else if (users[i].pageLog[z].page == "jupiterpride")
+            }else if (users[i].pageLog[z].page == "jupiterpride"){
               mlm.visits_day1_notflagged_bully++;
 
             //day 2
-            else if (users[i].pageLog[z].page == "SamTHEMAN")
+            }else if (users[i].pageLog[z].page == "SamTHEMAN"){
               mlm.visits_day2_flagged_victim++;
-            else if (users[i].pageLog[z].page == "Smitty12")
+            }else if (users[i].pageLog[z].page == "Smitty12"){
               mlm.visits_day2_flagged_bully++;
-            else if (users[i].pageLog[z].page == "southerngirlCel")
+            }else if (users[i].pageLog[z].page == "southerngirlCel"){
               mlm.visits_day2_notflagged_victim++;
-            else if (users[i].pageLog[z].page == "sweetpea")
+            }else if (users[i].pageLog[z].page == "sweetpea"){
               mlm.visits_day2_notflagged_bully++;
 
-            else
+            }else{
               mlm.visits_general++;
-        }
+            }
+        }//end of pageLog loop
 
         //Responses and times for day 1
         mlm.day1_modResponse = users[i].day1Response;
         mlm.day1_modResponseTime = users[i].day1ResponseTime;
         mlm.day1_policyResponse = users[i].day1ViewPolicyResponse;
         mlm.day1_policyResponseTime = users[i].day1ViewPolicyResponseTime;
-        mlm.day1_totalPolicyVisits = users[i].day1ViewPolicySources.length;
+        mlm.day1_totalPolicyViews = users[i].day1ViewPolicyTimes.length;
+        mlm.day1_firstPolicyViewTime = 0;
+        mlm.day1_averagePolicyViewTime = 0;
+        if(users[i].day1ViewPolicyTimes){
+          mlm.day1_firstPolicyViewTime = users[i].day1ViewPolicyTimes[0];
+          var averagePolicyViewTime = 0;
+          for(v = 0; v < users[i].day1ViewPolicyTimes.length; v++){
+            averagePolicyViewTime = averagePolicyViewTime + users[i].day1ViewPolicyTimes[v];
+          }
+          averagePolicyViewTime = averagePolicyViewTime / users[i].day1ViewPolicyTimes.length;
+          mlm.day1_averagePolicyViewTime = averagePolicyViewTime;
+        }
         mlm.day1_policyVisitSources = users[i].day1ViewPolicySources; //this is in order of occurrence
 
         //responses and times for day 2
@@ -336,7 +354,18 @@ User.find()
         mlm.day2_modResponseTime = users[i].day2ResponseTime;
         mlm.day2_policyResponse = users[i].day2ViewPolicyResponse;
         mlm.day2_policyResponseTime = users[i].day2ViewPolicyResponseTime;
-        mlm.day2_totalPolicyVisits = users[i].day2ViewPolicySources.length;
+        mlm.day2_totalPolicyViews = users[i].day2ViewPolicyTimes.length;
+        mlm.day2_firstPolicyViewTime = 0;
+        mlm.day2_averagePolicyViewTime = 0;
+        if(users[i].day2ViewPolicyTimes){
+          mlm.day2_firstPolicyViewTime = users[i].day2ViewPolicyTimes[0];
+          var averagePolicyViewTime = 0;
+          for(v = 0; v < users[i].day2ViewPolicyTimes.length; v++){
+            averagePolicyViewTime = averagePolicyViewTime + users[i].day2ViewPolicyTimes[v];
+          }
+          averagePolicyViewTime = averagePolicyViewTime / users[i].day2ViewPolicyTimes.length;
+          mlm.day2_averagePolicyViewTime = averagePolicyViewTime;
+        }
         mlm.day2_policyVisitSources = users[i].day2ViewPolicySources; //this is in order of occurrence
 
         //per feedAction

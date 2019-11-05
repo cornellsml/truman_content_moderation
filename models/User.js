@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
   day1ResponseTime: { type: Number, default: 0 }, //time that the user responded to the moderation question
   day1ViewPolicyResponse: {type: String, default: 'none'}, //Whether the user said yes or no to the moderation follow up question (do you want to see our policy?) (yes, no, none)
   day1ViewPolicyResponseTime: { type: Number, default: 0 }, //only records when the user responded yes/no to view policy question
-  day1ViewPolicyTimes: [Number], //When the user viewed the policy (can be multiple times from multiple sources)
+  day1ViewPolicyTimes: [Number], //How long the user viewed the policy (can be multiple times from multiple sources)
   day1ViewPolicySources: [String], //How the user accessed the policy (dropdown or from the yes/no followup question) (menu, comment)
   day2Response: {type: String, default: 'none'}, //Whether or not the user said yes/no to the moderation question
   day2ResponseTime: { type: Number, default: 0 }, //time that the user responded to the moderation question

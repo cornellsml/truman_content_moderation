@@ -812,17 +812,12 @@ exports.postUpdateFeedAction = (req, res, next) => {
       {
         let clickedViewPolicy = req.body.clickedViewPolicy - user.createdAt;
         console.log("!!!!!!New clickedViewPolicy Time: ", clickedViewPolicy);
-
+        user.logPage(Date.now(), "PolicyComment");
         if(clickedViewPolicy <= 86400000){
 
           user.day1ViewPolicyResponse = "yes";
           user.day1ViewPolicyResponseTime = clickedViewPolicy;
 
-          if (user.day1ViewPolicyTimes) {
-            user.day1ViewPolicyTimes.push(clickedViewPolicy);
-          } else {
-            user.day1ViewPolicyTimes = [clickedViewPolicy];
-          }
           if (user.day1ViewPolicySources) {
             user.day1ViewPolicySources.push("comment");
           } else {
@@ -834,11 +829,6 @@ exports.postUpdateFeedAction = (req, res, next) => {
           user.day2ViewPolicyResponse = "yes";
           user.day2ViewPolicyResponseTime = clickedViewPolicy;
 
-          if (user.day2ViewPolicyTimes) {
-            user.day2ViewPolicyTimes.push(clickedViewPolicy);
-          } else {
-            user.day2ViewPolicyTimes = [clickedViewPolicy];
-          }
           if (user.day2ViewPolicySources) {
             user.day2ViewPolicySources.push("comment");
           } else {

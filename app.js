@@ -330,6 +330,7 @@ app.post('/feed', passportConfig.isAuthenticated, scriptController.postUpdateFee
 app.post('/pro_feed', passportConfig.isAuthenticated, scriptController.postUpdateProFeedAction);
 app.post('/userPost_feed', passportConfig.isAuthenticated, scriptController.postUpdateUserPostFeedAction);
 app.post('/view_policy', passportConfig.isAuthenticated, userController.postViewPolicy);
+app.post('/view_policy_viewtime', passportConfig.isAuthenticated, userController.postViewPolicyViewTime);
 /**
  * Error Handler.
  */

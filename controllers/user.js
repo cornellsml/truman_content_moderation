@@ -386,30 +386,49 @@ exports.postUpdateProfile = (req, res, next) => {
   });
 };
 
+exports.postViewPolicyViewTime = (req, res, next) => {
+  User.findById(req.user.id, (err, user) => {
+    if (err) { return next(err); }
+    let totalPolicyViewTime = req.body.totalPolicyViewTime;
+    let startTime = req.body.startTime - user.createdAt;
+    if(startTime <= 86400000){
+      if (user.day1ViewPolicyTimes) {
+        user.day1ViewPolicyTimes.push(totalPolicyViewTime);
+      } else {
+        user.day1ViewPolicyTimes = [totalPolicyViewTime];
+      }
+    } else if (startTime > 86400000) {
+      if (user.day2ViewPolicyTimes) {
+        user.day2ViewPolicyTimes.push(totalPolicyViewTime);
+      } else {
+        user.day2ViewPolicyTimes = [totalPolicyViewTime];
+      }
+    }
+    user.save((err) => {
+      if (err) {
+        return next(err);
+      }
+      req.flash('success', { msg: 'Added policy view time' });
+    });
+  });
+};
+
 exports.postViewPolicy = (req, res, next) => {
 
   User.findById(req.user.id, (err, user) => {
     if (err) { return next(err); }
 
     let clickedViewPolicy = req.body.viewPolicyDropdownTime - user.createdAt;
-
+    user.logPage(Date.now(), "PolicyMenu");
     if(clickedViewPolicy <= 86400000){
-      if (user.day1ViewPolicyTimes) {
-        user.day1ViewPolicyTimes.push(clickedViewPolicy);
-      } else {
-        user.day1ViewPolicyTimes = [clickedViewPolicy];
-      }
+
       if (user.day1ViewPolicySources) {
         user.day1ViewPolicySources.push("menu");
       } else {
         user.day1ViewPolicySources = ["menu"];
       }
     } else if (clickedViewPolicy > 86400000) {
-      if (user.day2ViewPolicyTimes) {
-        user.day2ViewPolicyTimes.push(clickedViewPolicy);
-      } else {
-        user.day2ViewPolicyTimes = [clickedViewPolicy];
-      }
+
       if (user.day2ViewPolicySources) {
         user.day2ViewPolicySources.push("menu");
       } else {
