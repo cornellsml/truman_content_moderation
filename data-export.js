@@ -262,9 +262,6 @@ User.find()
           mlm.OS = "NA";
         }
 
-        mlm.siteLogins = users[i].log.length;
-        sums.siteLogins = users[i].log.length;
-
         //reporting if the user completed the study or not
         //log in 2x per day
         //created 1 post per day
@@ -298,6 +295,18 @@ User.find()
           sums.CompletedStudy = 0;
         }
 
+        mlm.siteLogins = users[i].log.length;
+        sums.siteLogins = users[i].log.length;
+        mlm.GeneralPostNumber = users[i].numPosts + 1;
+        sums.GeneralPostNumber = users[i].numPosts + 1;
+
+        mlm.day1_logins = day1_loginCount;
+        mlm.day1_posts = day1_postCount;
+        mlm.day2_logins = day2_loginCount;
+        mlm.day2_posts = day2_postCount;
+
+
+
       /*if (users[i].completed)
         {
           mlm.CompletedStudy = 1;
@@ -330,7 +339,7 @@ User.find()
         mlm.GeneralPostFlags = 0;
         mlm.GeneralCommentFlags = 0;
 
-        mlm.GeneralPostNumber = users[i].numPosts + 1;
+
         mlm.GeneralCommentNumber = users[i].numComments + 1;
 
         sums.GeneralPostNumber = mlm.GeneralPostNumber;
@@ -339,8 +348,6 @@ User.find()
         //info about specific page views
         mlm.visits_notification = 0;
         mlm.visits_policy = 0;
-        mlm.viewtime_firstPoliyVisit = 0;
-        mlm.average_viewtime_allPolicyVisits = 0;
         mlm.visits_day1_flagged_victim = 0;
         mlm.visits_day1_flagged_bully = 0;
         mlm.visits_day1_notflagged_victim = 0;
