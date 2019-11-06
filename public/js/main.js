@@ -408,7 +408,7 @@ $("i.big.send.link.icon").click(function() {
     var postID = $(this).closest( ".ui.fluid.card" ).attr( "postID" );
     var typeID = $(this).closest( ".ui.fluid.card" ).attr( "type" );
     var commentID = comment.attr("commentID");
-    comment.replaceWith( '<div class="comment" style="background-color:black;color:white"><h5 class="ui inverted header"><span>The admins will review this post further. We are sorry you had this experience.</span></h5></div>' );
+    comment.replaceWith( '<div class="comment" commentID='+commentID+' style="background-color:black;color:white"><h5 class="ui inverted header"><span>The admins will review this post further. We are sorry you had this experience.</span></h5></div>' );
     var flag = Date.now();
     console.log("#########COMMENT FLAG:  PostID: "+postID+", Comment ID: "+commentID+"  TYPE is "+typeID+" at time "+flag);
 

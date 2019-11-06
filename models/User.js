@@ -57,7 +57,7 @@ const userSchema = new mongoose.Schema({
   blocked: [String],
   reported: [String],
 
-  study_days: {
+  study_days: { //how many times the user looked at the feed per day
       type: [Number],
       default: [0, 0]
     },
@@ -207,31 +207,19 @@ userSchema.methods.comparePassword = function comparePassword(candidatePassword,
 };
 
 /**
- * Add Log to User if access is 1 hour from last use.
+ * Add Log to User
  */
 userSchema.methods.logUser = function logUser(time, agent, ip) {
-
-  if(this.log.length > 0)
-  {
-    var log_time = new Date(this.log[this.log.length -1].time);
-
-    if(time >= (log_time.getTime() + 3600000))
-    {
-      var log = {};
-      log.time = time;
-      log.userAgent = agent;
-      log.ipAddress = ip;
-      this.log.push(log);
+  var log = {};
+  log.time = time;
+  log.userAgent = agent;
+  log.ipAddress = ip;
+  this.log.push(log);
+  this.save((err) => {
+    if (err) {
+      return next(err);
     }
-  }
-  else if(this.log.length == 0)
-  {
-    var log = {};
-    log.time = time;
-    log.userAgent = agent;
-    log.ipAddress = ip;
-    this.log.push(log);
-  }
+  });
 
 };
 

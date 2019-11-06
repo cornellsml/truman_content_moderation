@@ -87,7 +87,7 @@ exports.getScript = (req, res, next) => {
       res.redirect('/login');
     }
 
-    user.logUser(time_now, userAgent, user_ip);
+    //user.logUser(time_now, userAgent, user_ip);
     user.logPage(Date.now(), "script");
 
     //what day in the study are we in???

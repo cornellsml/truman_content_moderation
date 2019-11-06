@@ -53,19 +53,15 @@ block content
       // if the page is shown, start the timer (i.e. get the current time)
       
       var policyPageViewTimer = Date.now();
-      console.log("Initial policy timer: " + policyPageViewTimer);
       function handleVisibilityChange() {
-        console.log("visibility change detected!");
         if (document[hidden]) {
           var currentTime = Date.now();
           totalViewTime = currentTime - policyPageViewTimer;
-          console.log("View Time: "+totalViewTime);
           //post to db 
           $.post("/view_policy_viewtime", { totalPolicyViewTime: totalViewTime, startTime: policyPageViewTimer, _csrf : $('meta[name="csrf-token"]').attr('content') } );
         } else {
           //start the timer
           policyPageViewTimer = Date.now();
-          console.log("Timer started: "+policyPageViewTimer);
         }
       }
       

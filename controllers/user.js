@@ -131,6 +131,11 @@ exports.postLogin = (req, res, next) => {
       if (err) { return next(err); }
       //req.flash('success', { msg: 'Success! You are logged in.' });
       //res.redirect(req.session.returnTo || '/');
+      //add login to user log
+      var time_now = Date.now();
+      var userAgent = req.headers['user-agent'];
+      var user_ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+      user.logUser(time_now, userAgent, user_ip);
       res.redirect('/');
     });
   })(req, res, next);

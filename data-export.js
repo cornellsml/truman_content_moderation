@@ -30,7 +30,7 @@ var summary_writer = csvWriter();
 "5bb3a93ad9fd14471bf397c8"];*/
 var bully_stats = [];
 var sur_array = [];
-
+/*
 //postIDs for the posts and comments we have interest in
 //UPDATE THESE WHENEVER NODE POPULATE IS RUN.
 day1Flagged = "5db98c32ed2b9b5a43880b2b"; //chicken parm, you guys!
@@ -50,6 +50,27 @@ otherComment263 = "5db98c37ed2b9b5a43881881"; //so pretty!
 otherComment150 = "5db98c37ed2b9b5a43881818"; // first try!
 otherComment310 = "5db98c37ed2b9b5a438818a6"; //nice!
 //end custom ids
+*/
+
+//IDs for local testing
+day1Flagged = "5db8869b601c9f2980652b5c"; //chicken parm, you guys!
+day1FlaggedCommentUnambig = "5db886e3601c9f29806538b2"; //is she pregnant?
+day1FlaggedCommentAmbig = "5db886e3601c9f29806538b3"; //ummmm imma pass
+day1NotFlagged = "5db8869c601c9f2980652be4"; //i had this pizza yesterday
+day1NotFlaggedComment = "5db886e3601c9f29806538b4"; //when will you get it into your head
+
+day2Flagged = "5db8869c601c9f2980652bdc"; //here's my attempt at bruschetta
+day2FlaggedCommentUnambig = "5db886e3601c9f29806538b5"; //this photo is uglier than you
+day2FlaggedCommentAmbig = "5db886f9601c9f29806539ce"; //plzzz don't ever cook this for me
+day2NotFlagged = "5db8869c601c9f2980652bee"; //AFTERNOON SNACKTIME !!!
+day2NotFlaggedComment = "5db886f9601c9f29806539cf"; //Everyone hates you
+
+otherComment229 = "5db886f0601c9f298065395a"; //dinner of champions!
+otherComment263 = "5db886f2601c9f2980653978"; //so pretty!
+otherComment150 = "5db886ea601c9f298065390f"; // first try!
+otherComment310 = "5db886f5601c9f298065399d"; //nice!
+//end custom ids for local testing
+
 
 Array.prototype.sum = function() {
     return this.reduce(function(a,b){return a+b;});
@@ -241,10 +262,43 @@ User.find()
           mlm.OS = "NA";
         }
 
-        mlm.sitevisits = users[i].log.length;
-        sums.sitevisits = users[i].log.length;
+        mlm.siteLogins = users[i].log.length;
+        sums.siteLogins = users[i].log.length;
 
-        if (users[i].completed)
+        //reporting if the user completed the study or not
+        //log in 2x per day
+        //created 1 post per day
+        var day1_loginCount = 0;
+        var day2_loginCount = 0;
+
+        for(logIndex = users[i].log.length-1; logIndex >= 0; logIndex--){
+          if(users[i].log[logIndex].time.getTime() <= (users[i].createdAt.getTime() + 86400000)){
+            day1_loginCount++;
+          }else if ((users[i].log[logIndex].time.getTime() > (users[i].createdAt.getTime() + 86400000)) && (users[i].log[logIndex].time.getTime() <= (users[i].createdAt.getTime() + 172800000))){
+            day2_loginCount++;
+          }
+        }
+
+        var day1_postCount = 0;
+        var day2_postCount = 0;
+
+        for(userPostIndex = users[i].posts.length-1; userPostIndex >= 0; userPostIndex--){
+          if(users[i].posts[userPostIndex].absTime.getTime() <= (users[i].createdAt.getTime() + 86400000)){
+            day1_postCount++;
+          }else if ((users[i].posts[userPostIndex].absTime.getTime() > (users[i].createdAt.getTime() + 86400000)) && (users[i].posts[userPostIndex].absTime.getTime() <= (users[i].createdAt.getTime() + 172800000))){
+            day2_postCount++;
+          }
+        }
+
+        if((day1_loginCount >=2) && (day2_loginCount >= 2) && (day1_postCount >=1) && (day2_postCount >= 1)) {
+          mlm.CompletedStudy = 1;
+          sums.CompletedStudy = 1;
+        } else {
+          mlm.CompletedStudy = 0;
+          sums.CompletedStudy = 0;
+        }
+
+      /*if (users[i].completed)
         {
           mlm.CompletedStudy = 1;
           sums.CompletedStudy = 1;
@@ -255,7 +309,7 @@ User.find()
           mlm.CompletedStudy = 0;
           sums.CompletedStudy = 0;
           //sur.CompletedStudy = 0;
-        }
+        }*/
 
         if (users[i].study_days.length > 0) //how many visits per day of the study
         {
@@ -338,7 +392,7 @@ User.find()
         mlm.day1_totalPolicyViews = users[i].day1ViewPolicyTimes.length;
         mlm.day1_firstPolicyViewTime = 0;
         mlm.day1_averagePolicyViewTime = 0;
-        if(users[i].day1ViewPolicyTimes){
+        if(users[i].day1ViewPolicyTimes.length > 0){
           mlm.day1_firstPolicyViewTime = users[i].day1ViewPolicyTimes[0];
           var averagePolicyViewTime = 0;
           for(v = 0; v < users[i].day1ViewPolicyTimes.length; v++){
@@ -357,7 +411,7 @@ User.find()
         mlm.day2_totalPolicyViews = users[i].day2ViewPolicyTimes.length;
         mlm.day2_firstPolicyViewTime = 0;
         mlm.day2_averagePolicyViewTime = 0;
-        if(users[i].day2ViewPolicyTimes){
+        if(users[i].day2ViewPolicyTimes.length > 0){
           mlm.day2_firstPolicyViewTime = users[i].day2ViewPolicyTimes[0];
           var averagePolicyViewTime = 0;
           for(v = 0; v < users[i].day2ViewPolicyTimes.length; v++){
@@ -373,7 +427,7 @@ User.find()
         sur.body = "";
         sur.picture = "";
         sur.absTime = "";
-        sur.sitevisits = -1;
+        sur.siteLogins = -1;
         sur.generalpagevisit = -1;
         sur.DayOneVists = -1;
         sur.DayTwoVists = -1;
@@ -385,66 +439,66 @@ User.find()
 
 
         //big list of ALL possible data labels, so that if a user doens't complete day 2, all of them still show up.
-        mlm.day1_Flagged_VictimPost_Liked = "";
-        mlm.day1_Flagged_VictimPost_TimesLiked = "";
-        mlm.day1_Flagged_VictimPost_LastLikeTime = "";
-        mlm.day1_Flagged_VictimPost_Flagged = "";
-        mlm.day1_Flagged_VictimPost_FlaggedTime = "";
-        mlm.day1_Flagged_VictimPost_TotalViews = "";
-        mlm.day1_Flagged_VictimPost_AvgViewTime = "";
-        mlm.day1_Flagged_BullyComment_Liked = "";
-        mlm.day1_Flagged_BullyComment_TimesLiked = "";
-        mlm.day1_Flagged_BullyComment_LastLikeTime = "";
-        mlm.day1_Flagged_BullyComment_Flagged = "";
-        mlm.day1_Flagged_BullyComment_LastFlagTime = "";
-        mlm.day1_Flagged_OtherComment229_Liked = "";
-        mlm.day1_Flagged_OtherComment229_TimesLiked = "";
-        mlm.day1_Flagged_OtherComment229_Flagged = "";
-        mlm.day1_Flagged_OtherComment263_Liked = "";
-        mlm.day1_Flagged_OtherComment263_TimesLiked = "";
-        mlm.day1_Flagged_OtherComment263_Flagged = "";
-        mlm.day1_Flagged_OtherComment150_Liked = "";
-        mlm.day1_Flagged_OtherComment150_TimesLiked = "";
-        mlm.day1_Flagged_OtherComment150_Flagged = "";
-        mlm.day1_NotFlagged_VictimPost_Liked = "";
-        mlm.day1_NotFlagged_VictimPost_TimesLiked = "";
-        mlm.day1_NotFlagged_VictimPost_LastLikeTime = "";
-        mlm.day1_NotFlagged_VictimPost_Flagged = "";
-        mlm.day1_NotFlagged_VictimPost_FlaggedTime = "";
-        mlm.day1_NotFlagged_VictimPost_TotalViews = "";
-        mlm.day1_NotFlagged_VictimPost_AvgViewTime = "";
-        mlm.day1_NotFlagged_BullyComment_Liked = "";
-        mlm.day1_NotFlagged_BullyComment_TimesLiked = "";
-        mlm.day1_NotFlagged_BullyComment_LastLikeTime = "";
-        mlm.day1_NotFlagged_BullyComment_Flagged = "";
-        mlm.day1_NotFlagged_BullyComment_LastFlagTime = "";
-        mlm.day2_Flagged_VictimPost_Liked = "";
-        mlm.day2_Flagged_VictimPost_TimesLiked = "";
-        mlm.day2_Flagged_VictimPost_LastLikeTime = "";
-        mlm.day2_Flagged_VictimPost_Flagged = "";
-        mlm.day2_Flagged_VictimPost_FlaggedTime = "";
-        mlm.day2_Flagged_VictimPost_TotalViews = "";
-        mlm.day2_Flagged_VictimPost_AvgViewTime = "";
-        mlm.day2_Flagged_BullyComment_Liked = "";
-        mlm.day2_Flagged_BullyComment_TimesLiked = "";
-        mlm.day2_Flagged_BullyComment_LastLikeTime = "";
-        mlm.day2_Flagged_BullyComment_Flagged = "";
-        mlm.day2_Flagged_BullyComment_LastFlagTime = "";
-        mlm.day2_Flagged_OtherComment310_Liked = "";
-        mlm.day2_Flagged_OtherComment310_TimesLiked = "";
-        mlm.day2_Flagged_OtherComment310_Flagged = "";
-        mlm.day2_NotFlagged_VictimPost_Liked = "";
-        mlm.day2_NotFlagged_VictimPost_TimesLiked = "";
-        mlm.day2_NotFlagged_VictimPost_LastLikeTime = "";
-        mlm.day2_NotFlagged_VictimPost_Flagged = "";
-        mlm.day2_NotFlagged_VictimPost_FlaggedTime = "";
-        mlm.day2_NotFlagged_VictimPost_TotalViews = "";
-        mlm.day2_NotFlagged_VictimPost_AvgViewTime = "";
-        mlm.day2_NotFlagged_BullyComment_Liked = "";
-        mlm.day2_NotFlagged_BullyComment_TimesLiked = "";
-        mlm.day2_NotFlagged_BullyComment_LastLikeTime = "";
-        mlm.day2_NotFlagged_BullyComment_Flagged = "";
-        mlm.day2_NotFlagged_BullyComment_LastFlagTime = "";
+        mlm.day1_Flagged_VictimPost_Liked = 0;
+        mlm.day1_Flagged_VictimPost_TimesLiked = 0;
+        mlm.day1_Flagged_VictimPost_LastLikeTime = 0;
+        mlm.day1_Flagged_VictimPost_Flagged = 0;
+        mlm.day1_Flagged_VictimPost_FlaggedTime = 0;
+        mlm.day1_Flagged_VictimPost_TotalViews = 0;
+        mlm.day1_Flagged_VictimPost_AvgViewTime = 0;
+        mlm.day1_Flagged_BullyComment_Liked = 0;
+        mlm.day1_Flagged_BullyComment_TimesLiked = 0;
+        mlm.day1_Flagged_BullyComment_LastLikeTime = 0;
+        mlm.day1_Flagged_BullyComment_Flagged = 0;
+        mlm.day1_Flagged_BullyComment_LastFlagTime = 0;
+        mlm.day1_Flagged_OtherComment229_Liked = 0;
+        mlm.day1_Flagged_OtherComment229_TimesLiked = 0;
+        mlm.day1_Flagged_OtherComment229_Flagged = 0;
+        mlm.day1_Flagged_OtherComment263_Liked = 0;
+        mlm.day1_Flagged_OtherComment263_TimesLiked = 0;
+        mlm.day1_Flagged_OtherComment263_Flagged = 0;
+        mlm.day1_Flagged_OtherComment150_Liked = 0;
+        mlm.day1_Flagged_OtherComment150_TimesLiked = 0;
+        mlm.day1_Flagged_OtherComment150_Flagged = 0;
+        mlm.day1_NotFlagged_VictimPost_Liked = 0;
+        mlm.day1_NotFlagged_VictimPost_TimesLiked = 0;
+        mlm.day1_NotFlagged_VictimPost_LastLikeTime = 0;
+        mlm.day1_NotFlagged_VictimPost_Flagged = 0;
+        mlm.day1_NotFlagged_VictimPost_FlaggedTime = 0;
+        mlm.day1_NotFlagged_VictimPost_TotalViews = 0;
+        mlm.day1_NotFlagged_VictimPost_AvgViewTime = 0;
+        mlm.day1_NotFlagged_BullyComment_Liked = 0;
+        mlm.day1_NotFlagged_BullyComment_TimesLiked = 0;
+        mlm.day1_NotFlagged_BullyComment_LastLikeTime = 0;
+        mlm.day1_NotFlagged_BullyComment_Flagged = 0;
+        mlm.day1_NotFlagged_BullyComment_LastFlagTime = 0;
+        mlm.day2_Flagged_VictimPost_Liked = 0;
+        mlm.day2_Flagged_VictimPost_TimesLiked = 0;
+        mlm.day2_Flagged_VictimPost_LastLikeTime = 0;
+        mlm.day2_Flagged_VictimPost_Flagged = 0;
+        mlm.day2_Flagged_VictimPost_FlaggedTime = 0;
+        mlm.day2_Flagged_VictimPost_TotalViews = 0;
+        mlm.day2_Flagged_VictimPost_AvgViewTime = 0;
+        mlm.day2_Flagged_BullyComment_Liked = 0;
+        mlm.day2_Flagged_BullyComment_TimesLiked = 0;
+        mlm.day2_Flagged_BullyComment_LastLikeTime = 0;
+        mlm.day2_Flagged_BullyComment_Flagged = 0;
+        mlm.day2_Flagged_BullyComment_LastFlagTime = 0;
+        mlm.day2_Flagged_OtherComment310_Liked = 0;
+        mlm.day2_Flagged_OtherComment310_TimesLiked = 0;
+        mlm.day2_Flagged_OtherComment310_Flagged = 0;
+        mlm.day2_NotFlagged_VictimPost_Liked = 0;
+        mlm.day2_NotFlagged_VictimPost_TimesLiked = 0;
+        mlm.day2_NotFlagged_VictimPost_LastLikeTime = 0;
+        mlm.day2_NotFlagged_VictimPost_Flagged = 0;
+        mlm.day2_NotFlagged_VictimPost_FlaggedTime = 0;
+        mlm.day2_NotFlagged_VictimPost_TotalViews = 0;
+        mlm.day2_NotFlagged_VictimPost_AvgViewTime = 0;
+        mlm.day2_NotFlagged_BullyComment_Liked = 0;
+        mlm.day2_NotFlagged_BullyComment_TimesLiked = 0;
+        mlm.day2_NotFlagged_BullyComment_LastLikeTime = 0;
+        mlm.day2_NotFlagged_BullyComment_Flagged = 0;
+        mlm.day2_NotFlagged_BullyComment_LastFlagTime = 0;
 
         //end the big list of data labels!!!
         //Now fill them
@@ -466,7 +520,7 @@ User.find()
           if(postStatsIndex!=-1)
           {
               console.log("Check post LOG!!!!!!");
-              temp_post.sitevisits = users[i].postStats[postStatsIndex].citevisits;
+              temp_post.siteLogins = users[i].postStats[postStatsIndex].citevisits;
               temp_post.generalpagevisit = users[i].postStats[postStatsIndex].generalpagevisit;
               temp_post.DayOneVists = users[i].postStats[postStatsIndex].DayOneVists;
               temp_post.DayTwoVists = users[i].postStats[postStatsIndex].DayTwoVists;
@@ -502,16 +556,18 @@ User.find()
             }
 
             if((currentAction.post.id == day1Flagged) || (currentAction.post.id == day1NotFlagged) || (currentAction.post.id == day2Flagged) || (currentAction.post.id == day2NotFlagged)){
-              mlm[namePrefix + "VictimPost_Liked"] = currentAction.liked;
+              mlm[namePrefix + "VictimPost_Liked"] = +currentAction.liked;
               mlm[namePrefix +"VictimPost_TimesLiked"] = currentAction.likeTime.length;
-              mlm[namePrefix +"VictimPost_LastLikeTime"] = currentAction.likeTime[currentAction.likeTime.length -1];
+              if(currentAction.likeTime.length > 0){
+                mlm[namePrefix +"VictimPost_LastLikeTime"] = currentAction.likeTime[currentAction.likeTime.length -1];
+              }
               //logic to determine if flagged or not based on if there are any timestamps
               if(currentAction.flagTime.length > 0) {
-                mlm[namePrefix +"VictimPost_Flagged"] = true;
+                mlm[namePrefix +"VictimPost_Flagged"] = 1;
+                mlm[namePrefix +"VictimPost_FlaggedTime"] = currentAction.flagTime[currentAction.flagTime.length - 1];
               } else {
-                mlm[namePrefix +"VictimPost_Flagged"] = false;
+                mlm[namePrefix +"VictimPost_Flagged"] = 0;
               }
-              mlm[namePrefix +"VictimPost_FlaggedTime"] = currentAction.flagTime[currentAction.flagTime.length - 1];
               mlm[namePrefix +"VictimPost_TotalViews"] = currentAction.viewedTime.length;
               //calculate average view time for the post
               var averageVictimPostViewTime = 0;
@@ -550,31 +606,39 @@ User.find()
                   if(users[i].bully_group === "ambig"){
                     if((currentComment.comment == day1FlaggedCommentAmbig) || (currentComment.comment == day1NotFlaggedComment) || (currentComment.comment == day2FlaggedCommentAmbig) || (currentComment.comment == day2NotFlaggedComment)){
                       //this is a bully comment that we want all the data for
-                      mlm[namePrefix+"BullyComment_Liked"] = currentComment.liked;
+                      mlm[namePrefix+"BullyComment_Liked"] = +currentComment.liked;
                       mlm[namePrefix +"BullyComment_TimesLiked"] = currentComment.likeTime.length;
-                      mlm[namePrefix +"BullyComment_LastLikeTime"] = currentComment.likeTime[currentComment.likeTime.length -1];
-                      mlm[namePrefix+"BullyComment_Flagged"] = currentComment.flagged;
-                      mlm[namePrefix +"BullyComment_LastFlagTime"] = currentComment.flagTime[currentComment.flagTime.length -1];
+                      if(currentComment.likeTime.length > 0){
+                        mlm[namePrefix +"BullyComment_LastLikeTime"] = currentComment.likeTime[currentComment.likeTime.length -1];
+                      }
+                      mlm[namePrefix+"BullyComment_Flagged"] = +currentComment.flagged;
+                      if(currentComment.flagTime.length > 0){
+                        mlm[namePrefix +"BullyComment_LastFlagTime"] = currentComment.flagTime[currentComment.flagTime.length -1];
+                      }
                     } else { //this is a normal comment that we want only half the data for
                       if(otherCommentID !== 0){
-                        mlm[namePrefix+"OtherComment"+otherCommentID+"_Liked"] = currentComment.liked;
+                        mlm[namePrefix+"OtherComment"+otherCommentID+"_Liked"] = +currentComment.liked;
                         mlm[namePrefix+"OtherComment"+otherCommentID+"_TimesLiked"] = currentComment.likeTime.length;
-                        mlm[namePrefix+"OtherComment"+otherCommentID+"_Flagged"] = currentComment.flagged;
+                        mlm[namePrefix+"OtherComment"+otherCommentID+"_Flagged"] = +currentComment.flagged;
                       }
                     }
                   } else if (users[i].bully_group === "unambig"){
                     if((currentComment.comment == day1FlaggedCommentUnambig) || (currentComment.comment == day1NotFlaggedComment) || (currentComment.comment == day2FlaggedCommentUnambig) || (currentComment.comment == day2NotFlaggedComment)){
                       //this is a bully comment that we want all the data for
-                      mlm[namePrefix+"BullyComment_Liked"] = currentComment.liked;
+                      mlm[namePrefix+"BullyComment_Liked"] = +currentComment.liked;
                       mlm[namePrefix +"BullyComment_TimesLiked"] = currentComment.likeTime.length;
-                      mlm[namePrefix +"BullyComment_LastLikeTime"] = currentComment.likeTime[currentComment.likeTime.length -1];
-                      mlm[namePrefix+"BullyComment_Flagged"] = currentComment.flagged;
-                      mlm[namePrefix +"BullyComment_LastFlagTime"] = currentComment.flagTime[currentComment.flagTime.length -1];
+                      if(currentComment.likeTime.length > 0){
+                        mlm[namePrefix +"BullyComment_LastLikeTime"] = currentComment.likeTime[currentComment.likeTime.length -1];
+                      }
+                      mlm[namePrefix+"BullyComment_Flagged"] = +currentComment.flagged;
+                      if(currentComment.flagTime.length > 0){
+                        mlm[namePrefix +"BullyComment_LastFlagTime"] = currentComment.flagTime[currentComment.flagTime.length -1];
+                      }
                     } else { //this is a normal comment that we only want half the data for
                       if(otherCommentID !== 0){
-                        mlm[namePrefix+"OtherComment"+otherCommentID+"_Liked"] = currentComment.liked;
+                        mlm[namePrefix+"OtherComment"+otherCommentID+"_Liked"] = +currentComment.liked;
                         mlm[namePrefix+"OtherComment"+otherCommentID+"_TimesLiked"] = currentComment.likeTime.length;
-                        mlm[namePrefix+"OtherComment"+otherCommentID+"_Flagged"] = currentComment.flagged;
+                        mlm[namePrefix+"OtherComment"+otherCommentID+"_Flagged"] = +currentComment.flagged;
                       }
                     }
                   }
