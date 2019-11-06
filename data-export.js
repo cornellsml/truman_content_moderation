@@ -30,7 +30,7 @@ var summary_writer = csvWriter();
 "5bb3a93ad9fd14471bf397c8"];*/
 var bully_stats = [];
 var sur_array = [];
-/*
+
 //postIDs for the posts and comments we have interest in
 //UPDATE THESE WHENEVER NODE POPULATE IS RUN.
 day1Flagged = "5db98c32ed2b9b5a43880b2b"; //chicken parm, you guys!
@@ -50,26 +50,6 @@ otherComment263 = "5db98c37ed2b9b5a43881881"; //so pretty!
 otherComment150 = "5db98c37ed2b9b5a43881818"; // first try!
 otherComment310 = "5db98c37ed2b9b5a438818a6"; //nice!
 //end custom ids
-*/
-
-//IDs for local testing
-day1Flagged = "5db8869b601c9f2980652b5c"; //chicken parm, you guys!
-day1FlaggedCommentUnambig = "5db886e3601c9f29806538b2"; //is she pregnant?
-day1FlaggedCommentAmbig = "5db886e3601c9f29806538b3"; //ummmm imma pass
-day1NotFlagged = "5db8869c601c9f2980652be4"; //i had this pizza yesterday
-day1NotFlaggedComment = "5db886e3601c9f29806538b4"; //when will you get it into your head
-
-day2Flagged = "5db8869c601c9f2980652bdc"; //here's my attempt at bruschetta
-day2FlaggedCommentUnambig = "5db886e3601c9f29806538b5"; //this photo is uglier than you
-day2FlaggedCommentAmbig = "5db886f9601c9f29806539ce"; //plzzz don't ever cook this for me
-day2NotFlagged = "5db8869c601c9f2980652bee"; //AFTERNOON SNACKTIME !!!
-day2NotFlaggedComment = "5db886f9601c9f29806539cf"; //Everyone hates you
-
-otherComment229 = "5db886f0601c9f298065395a"; //dinner of champions!
-otherComment263 = "5db886f2601c9f2980653978"; //so pretty!
-otherComment150 = "5db886ea601c9f298065390f"; // first try!
-otherComment310 = "5db886f5601c9f298065399d"; //nice!
-//end custom ids for local testing
 
 
 Array.prototype.sum = function() {
