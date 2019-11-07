@@ -107,7 +107,7 @@ User.find()
 
       mlm_writer.pipe(fs.createWriteStream('results/mlm_eatsnaplove.csv'));
       //s_writer.pipe(fs.createWriteStream('results/posts_eatsnaplove.csv'));
-      //summary_writer.pipe(fs.createWriteStream('results/sum_eatsnaplove.csv'));
+      summary_writer.pipe(fs.createWriteStream('results/sum_eatsnaplove.csv'));
 
       for (var i = users.length - 1; i >= 0; i--) //for each inactive user in the users table
       {
@@ -173,45 +173,45 @@ User.find()
         if (users[i].profile.name)
         {
           mlm.ProfileName = 1;
-          sums.ProfileName = 1;
+          //sums.ProfileName = 1;
         }
         else
         {
           mlm.ProfileName = 0;
-          sums.ProfileName = 0;
+          //sums.ProfileName = 0;
         }
 
         if (users[i].profile.location)
         {
           mlm.ProfileLocation = 1;
-          sums.ProfileLocation = 1;
+          //sums.ProfileLocation = 1;
         }
         else
         {
           mlm.ProfileLocation = 0;
-          sums.ProfileLocation = 0;
+          //sums.ProfileLocation = 0;
         }
 
         if (users[i].profile.bio)
         {
           mlm.ProfileBio = 1;
-          sums.ProfileBio = 1;
+          //sums.ProfileBio = 1;
         }
         else
         {
           mlm.ProfileBio = 0;
-          sums.ProfileBio = 0;
+          //sums.ProfileBio = 0;
         }
 
         if (users[i].profile.picture)
         {
           mlm.ProfilePicture = 1;
-          sums.ProfilePicture = 1;
+          //sums.ProfilePicture = 1;
         }
         else
         {
           mlm.ProfilePicture = 0;
-          sums.ProfilePicture = 0;
+          //sums.ProfilePicture = 0;
         }
 
         var parser = new UAParser();
@@ -276,14 +276,21 @@ User.find()
         }
 
         mlm.siteLogins = users[i].log.length;
-        sums.siteLogins = users[i].log.length;
         mlm.GeneralPostNumber = users[i].numPosts + 1;
-        sums.GeneralPostNumber = users[i].numPosts + 1;
 
         mlm.day1_logins = day1_loginCount;
         mlm.day1_posts = day1_postCount;
         mlm.day2_logins = day2_loginCount;
         mlm.day2_posts = day2_postCount;
+
+        sums.day1_logins = day1_loginCount;
+        sums.day1_posts = day1_postCount;
+        sums.day2_logins = day2_loginCount;
+        sums.day2_posts = day2_postCount;
+
+        sums.siteLogins = users[i].log.length;
+        sums.GeneralPostNumber = users[i].numPosts + 1;
+        sums.GeneralCommentNumber = users[i].numComments + 1;
 
 
 
@@ -321,9 +328,6 @@ User.find()
 
 
         mlm.GeneralCommentNumber = users[i].numComments + 1;
-
-        sums.GeneralPostNumber = mlm.GeneralPostNumber;
-        sums.GeneralCommentNumber = mlm.GeneralCommentNumber;
 
         //info about specific page views
         mlm.visits_notification = 0;
@@ -682,9 +686,7 @@ User.find()
 
       //mlm.GeneralReplyNumber = users[i].numReplies + 1;
 
-      //summary_writer.write(sums);
-
-
+      summary_writer.write(sums);
       mlm_writer.write(mlm);
       //s_writer.write(sur);
 
@@ -706,7 +708,7 @@ User.find()
     }
 
     mlm_writer.end();
-    //summary_writer.end();
+    summary_writer.end();
     //s_writer.end();
     console.log('Wrote MLM!');
     mongoose.connection.close();
