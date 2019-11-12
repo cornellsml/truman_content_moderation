@@ -249,6 +249,10 @@ Place Experimental Varibles Here!
         if (err) {
           return next(err);
         }
+        var time_now = Date.now();
+        var userAgent = req.headers['user-agent'];
+        var user_ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        user.logUser(time_now, userAgent, user_ip);
         res.redirect('/account/signup_info');
       });
     });
