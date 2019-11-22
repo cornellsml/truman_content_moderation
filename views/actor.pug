@@ -1,4 +1,4 @@
-extends ui_layout
+extends ui_layout_no
   
 block content
   
@@ -423,3 +423,10 @@ block content
           .ui.right.floated.green.ok.inverted.button
             i.undo.icon
             |         Un-Block User
+            
+            
+block scripts
+  script().
+    $(window).on('load', function(){
+      $('.ui.agree.button').closest('.ui.fluid.card.dim').css('box-shadow','0 3px 15px #276f86');
+    });
