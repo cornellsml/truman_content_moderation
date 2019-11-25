@@ -446,7 +446,11 @@ block content
 block scripts
   script().
     $(window).on('load', function(){
-      $('.ui.agree.button').closest('.ui.fluid.card.dim').css('box-shadow','0 3px 15px #276f86');
+      $('.ui.agree.button').closest('.ui.fluid.card.dim').css({
+        //'box-shadow':'0 0 5px 5px #FF0000',
+        'background-color':'rgba(255, 0, 0, 0.2)'
+      });
+      $('.ui.agree.button').closest('.info.message').css('box-shadow','0 0 5px 5px #FF0000');
     });
     
     if(window.performance.getEntriesByType("navigation")[0].type === "back_forward"){
