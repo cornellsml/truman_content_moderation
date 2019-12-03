@@ -21,7 +21,7 @@ block content
     h3 No NSFW material
     p If you wouldn't show your boss, don't show it here! 
 
-    .ui.big.green.labeled.icon.button.info
+    .ui.big.green.labeled.icon.button#policyButton
         i.rocket.icon
         |   Return to Feed
     br
@@ -53,11 +53,12 @@ block content
       // if the page is shown, start the timer (i.e. get the current time)
       
       var policyPageViewTimer = Date.now();
+      
       function handleVisibilityChange() {
         if (document[hidden]) {
           var currentTime = Date.now();
           totalViewTime = currentTime - policyPageViewTimer;
-          //post to db 
+          //post to db, this will get cancelled if you click the button. This is for swapping between tabs
           $.post("/view_policy_viewtime", { totalPolicyViewTime: totalViewTime, startTime: policyPageViewTimer, _csrf : $('meta[name="csrf-token"]').attr('content') } );
         } else {
           //start the timer
@@ -67,3 +68,14 @@ block content
       
       // Handle page visibility change   
       document.addEventListener(visibilityChange, handleVisibilityChange, false);
+      
+      //recording the time on a normal button click exit
+      $('#policyButton, #headerHomeButton').on('click', function(){
+        var currentTime = Date.now();
+        totalViewTime = currentTime - policyPageViewTimer;
+        //post to db, wait to change the page
+        $.post("/view_policy_viewtime", { totalPolicyViewTime: totalViewTime, startTime: policyPageViewTimer, _csrf : $('meta[name="csrf-token"]').attr('content') }, function(){
+          window.location.href='/';
+        } );
+      
+      });

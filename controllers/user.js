@@ -417,7 +417,7 @@ exports.postViewPolicyViewTime = (req, res, next) => {
       if (err) {
         return next(err);
       }
-      req.flash('success', { msg: 'Added policy view time' });
+      res.send({result:"success"});
     });
   });
 };
@@ -448,7 +448,7 @@ exports.postViewPolicy = (req, res, next) => {
       if (err) {
         return next(err);
       }
-      req.flash('success', { msg: 'Added policy view time' });
+      res.send({result:"success"});
     });
   });
 };

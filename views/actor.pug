@@ -131,6 +131,8 @@ block content
                             //-Customizing the message based on the flag_group the current user is in 
                             if(user.flag_group === "none")
                               .ui.icon.message.ignore
+                                .ui.disabled.inverted.dimmer
+                                  .ui.indeterminate.loader 
                                 i.flag.icon.float
                                 .content
                                   .ui.header(style="color:black;") This comment has been flagged as harassment. Do you agree? 
@@ -138,6 +140,8 @@ block content
                                   a.ui.disagree.button No 
                             if(user.flag_group === "ai")
                               .ui.icon.message.ignore
+                                .ui.disabled.inverted.dimmer
+                                  .ui.indeterminate.loader 
                                 i.laptop.icon.float
                                 .content
                                   .ui.header(style="color:black;") Our automated system has flagged this comment as harassment. Do you agree? 
@@ -145,6 +149,8 @@ block content
                                   a.ui.disagree.button No 
                             if(user.flag_group === "user")  
                               .ui.icon.message.ignore
+                                .ui.disabled.inverted.dimmer
+                                  .ui.indeterminate.loader 
                                 i.users.icon.float
                                 .content
                                   .ui.header(style="color:black;") Other users have flagged this comment as harassment. Do you agree? 
@@ -177,6 +183,8 @@ block content
                                 a.flag.comment Flag
                                 //-Customizing the message based on the flag_group the current user is in 
                             .ui.success.icon.message
+                              .ui.disabled.inverted.dimmer
+                                .ui.indeterminate.loader 
                               i.balance.scale.icon.float
                               .content
                                 h3.header Your response has been recorded. Do you want to view the moderation policy?
@@ -185,6 +193,8 @@ block content
                                 
                           .comment.modRespondedYes(commentID=comment.id style="display:none;")
                             .ui.success.icon.message
+                              .ui.disabled.inverted.dimmer
+                                .ui.indeterminate.loader 
                               i.balance.scale.icon.float
                               .content
                                 h3.header Your response has been recorded. Do you want to view the moderation policy?
