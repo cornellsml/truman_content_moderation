@@ -380,7 +380,7 @@ User.find()
         mlm.day1_modResponseTime = users[i].day1ResponseTime;
         mlm.day1_policyResponse = users[i].day1ViewPolicyResponse;
         mlm.day1_policyResponseTime = users[i].day1ViewPolicyResponseTime;
-        mlm.day1_totalPolicyViews = users[i].day1ViewPolicyTimes.length;
+        mlm.day1_totalPolicyViews = users[i].day1ViewPolicySources.length;
         mlm.day1_firstPolicyViewTime = 0;
         mlm.day1_averagePolicyViewTime = 0;
         if(users[i].day1ViewPolicyTimes.length > 0){
@@ -399,7 +399,7 @@ User.find()
         mlm.day2_modResponseTime = users[i].day2ResponseTime;
         mlm.day2_policyResponse = users[i].day2ViewPolicyResponse;
         mlm.day2_policyResponseTime = users[i].day2ViewPolicyResponseTime;
-        mlm.day2_totalPolicyViews = users[i].day2ViewPolicyTimes.length;
+        mlm.day2_totalPolicyViews = users[i].day2ViewPolicySources.length;
         mlm.day2_firstPolicyViewTime = 0;
         mlm.day2_averagePolicyViewTime = 0;
         if(users[i].day2ViewPolicyTimes.length > 0){
