@@ -275,6 +275,30 @@ User.find()
           sums.CompletedStudy = 0;
         }
 
+        if(((day1_loginCount >=2) && (day1_postCount >=1)) || ((day2_loginCount >= 2) && (day2_postCount >= 1))) {
+          mlm.MinimumOneDayCompleted = 1;
+          sums.MinimumOneDayCompleted = 1;
+        } else {
+          mlm.MinimumOneDayCompleted = 0;
+          sums.MinimumOneDayCompleted = 0;
+        }
+
+        if((day1_loginCount >=2) && (day1_postCount >=1)) {
+          mlm.CompletedDay1 = 1;
+          sums.CompletedDay1 = 1;
+        } else {
+          mlm.CompletedDay1 = 0;
+          sums.CompletedDay1 = 0;
+        }
+
+        if((day2_loginCount >=2) && (day2_postCount >=1)) {
+          mlm.CompletedDay2 = 1;
+          sums.CompletedDay2 = 1;
+        } else {
+          mlm.CompletedDay2 = 0;
+          sums.CompletedDay2 = 0;
+        }
+
         mlm.siteLogins = users[i].log.length;
         mlm.GeneralPostNumber = users[i].numPosts + 1;
 
